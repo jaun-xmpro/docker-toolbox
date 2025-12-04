@@ -68,6 +68,19 @@ echo "  6) Custom selection"
 echo ""
 read -p "Enter your choice [1-6]: " choice
 
+echo ""
+echo "Use 'dt-' prefix for aliases? (Recommended to avoid conflicts)"
+echo "Examples: dt-python instead of dpy, dt-node instead of dnode"
+echo ""
+read -p "Use dt- prefix? [Y/n]: " use_prefix
+use_prefix=${use_prefix:-Y}
+
+if [[ "$use_prefix" =~ ^[Yy]$ ]]; then
+    PREFIX="dt-"
+else
+    PREFIX=""
+fi
+
 # Function to add aliases to config file
 add_aliases() {
     local category=$1
@@ -98,43 +111,43 @@ ALIASES
 
     case $category in
         essential|all)
-            cat >> "$CONFIG_FILE" << 'ALIASES'
+            cat >> "$CONFIG_FILE" << ALIASES
 # Essential tools
-alias dpy='docker run --rm -it -v ${PWD}:/app -w /app python:3.12 python'
-alias dnode='docker run --rm -it -v ${PWD}:/app -w /app node:22 node'
-alias jupyter='docker run --rm -p 8888:8888 -v ${PWD}:/home/jovyan/work jupyter/base-notebook'
-alias prettier='docker run --rm -v ${PWD}:/work tmknom/prettier'
-alias jq='docker run --rm -i ghcr.io/jqlang/jq'
+alias ${PREFIX}python='docker run --rm -it -v \${PWD}:/app -w /app python:3.12 python'
+alias ${PREFIX}node='docker run --rm -it -v \${PWD}:/app -w /app node:22 node'
+alias ${PREFIX}jupyter='docker run --rm -p 8888:8888 -v \${PWD}:/home/jovyan/work jupyter/base-notebook'
+alias ${PREFIX}prettier='docker run --rm -v \${PWD}:/work tmknom/prettier'
+alias ${PREFIX}jq='docker run --rm -i ghcr.io/jqlang/jq'
 
 ALIASES
             ;&
         languages|all)
-            cat >> "$CONFIG_FILE" << 'ALIASES'
+            cat >> "$CONFIG_FILE" << ALIASES
 # Programming Languages
-alias dpip='docker run --rm -v ${PWD}:/app -w /app python:3.12 pip'
-alias jupyterlab='docker run --rm -p 8888:8888 -v ${PWD}:/home/jovyan/work jupyter/datascience-notebook'
-alias jupyter-scipy='docker run --rm -p 8888:8888 -v ${PWD}:/home/jovyan/work jupyter/scipy-notebook'
-alias dnpm='docker run --rm -v ${PWD}:/app -w /app node:22 npm'
-alias dgo='docker run --rm -v ${PWD}:/app -w /app golang:1.22 go'
-alias druby='docker run --rm -it -v ${PWD}:/app -w /app ruby:3.3 ruby'
+alias ${PREFIX}pip='docker run --rm -v \${PWD}:/app -w /app python:3.12 pip'
+alias ${PREFIX}jupyterlab='docker run --rm -p 8888:8888 -v \${PWD}:/home/jovyan/work jupyter/datascience-notebook'
+alias ${PREFIX}jupyter-scipy='docker run --rm -p 8888:8888 -v \${PWD}:/home/jovyan/work jupyter/scipy-notebook'
+alias ${PREFIX}npm='docker run --rm -v \${PWD}:/app -w /app node:22 npm'
+alias ${PREFIX}go='docker run --rm -v \${PWD}:/app -w /app golang:1.22 go'
+alias ${PREFIX}ruby='docker run --rm -it -v \${PWD}:/app -w /app ruby:3.3 ruby'
 
 ALIASES
             ;&
         terminal|all)
-            cat >> "$CONFIG_FILE" << 'ALIASES'
+            cat >> "$CONFIG_FILE" << ALIASES
 # Terminal Tools
-alias rg='docker run --rm -v ${PWD}:/data -w /data alpine sh -c "apk add --no-cache ripgrep > /dev/null 2>&1 && rg"'
-alias yq='docker run --rm -v ${PWD}:/workdir mikefarah/yq'
-alias lazygit='docker run --rm -it -v ${PWD}:/repo -w /repo lazyteam/lazygit'
-alias lazydocker='docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock lazyteam/lazydocker'
+alias ${PREFIX}rg='docker run --rm -v \${PWD}:/data -w /data alpine sh -c "apk add --no-cache ripgrep > /dev/null 2>&1 && rg"'
+alias ${PREFIX}yq='docker run --rm -v \${PWD}:/workdir mikefarah/yq'
+alias ${PREFIX}lazygit='docker run --rm -it -v \${PWD}:/repo -w /repo lazyteam/lazygit'
+alias ${PREFIX}lazydocker='docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock lazyteam/lazydocker'
 
 ALIASES
             ;&
         devops|all)
-            cat >> "$CONFIG_FILE" << 'ALIASES'
+            cat >> "$CONFIG_FILE" << ALIASES
 # DevOps Tools
-alias dgit='docker run --rm -v ${PWD}:/git -w /git alpine/git'
-alias trivy='docker run --rm aquasec/trivy'
+alias ${PREFIX}git='docker run --rm -v \${PWD}:/git -w /git alpine/git'
+alias ${PREFIX}trivy='docker run --rm aquasec/trivy'
 
 ALIASES
             ;;

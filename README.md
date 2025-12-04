@@ -99,33 +99,43 @@ docker run --rm -v ${PWD}:/work -w /work mcr.microsoft.com/playwright:v1.40.0 np
 
 ### Using Aliases (Recommended)
 
-Instead of typing long Docker commands, set up aliases:
+Instead of typing long Docker commands, set up aliases.
+
+**💡 Pro Tip:** Use the `dt-` prefix (Docker Tools) to avoid conflicts with natively installed tools!
 
 #### Linux / macOS (Bash/Zsh)
 
 Add to `~/.bashrc` or `~/.zshrc`:
 
 ```bash
-alias dpy='docker run --rm -it -v ${PWD}:/app -w /app python:3.12 python'
-alias dnode='docker run --rm -it -v ${PWD}:/app -w /app node:22 node'
-alias rg='docker run --rm -v ${PWD}:/data -w /data alpine sh -c "apk add --no-cache ripgrep > /dev/null 2>&1 && rg"'
-alias prettier='docker run --rm -v ${PWD}:/work tmknom/prettier'
+# Recommended: with dt- prefix (no conflicts!)
+alias dt-python='docker run --rm -it -v ${PWD}:/app -w /app python:3.12 python'
+alias dt-node='docker run --rm -it -v ${PWD}:/app -w /app node:22 node'
+alias dt-jupyter='docker run --rm -p 8888:8888 -v ${PWD}:/home/jovyan/work jupyter/base-notebook'
+alias dt-rg='docker run --rm -v ${PWD}:/data -w /data alpine sh -c "apk add --no-cache ripgrep > /dev/null 2>&1 && rg"'
 ```
 
 Then reload: `source ~/.bashrc`
+
+Usage: `dt-python script.py`, `dt-node app.js`, `dt-jupyter`
 
 #### Windows PowerShell
 
 Add to your PowerShell profile (`notepad $PROFILE`):
 
 ```powershell
-function dpy { docker run --rm -it -v ${PWD}:/app -w /app python:3.12 python $args }
-function dnode { docker run --rm -it -v ${PWD}:/app -w /app node:22 node $args }
-function rg { docker run --rm -v ${PWD}:/data -w /data alpine sh -c "apk add --no-cache ripgrep > /dev/null 2>&1 && rg $args" }
-function prettier { docker run --rm -v ${PWD}:/work tmknom/prettier $args }
+# Recommended: with dt- prefix (no conflicts!)
+function dt-python { docker run --rm -it -v ${PWD}:/app -w /app python:3.12 python $args }
+function dt-node { docker run --rm -it -v ${PWD}:/app -w /app node:22 node $args }
+function dt-jupyter { docker run --rm -p 8888:8888 -v ${PWD}:/home/jovyan/work jupyter/base-notebook }
+function dt-rg { docker run --rm -v ${PWD}:/data -w /data alpine sh -c "apk add --no-cache ripgrep > /dev/null 2>&1 && rg $args" }
 ```
 
-Then reload: `. $PROFILE`
+**Important:** Save the file, then reload: `. $PROFILE` (or restart PowerShell)
+
+**Note:** Functions in PowerShell are temporary unless added to your profile file. The profile persists across sessions.
+
+Usage: `dt-python script.py`, `dt-node app.js`, `dt-jupyter`
 
 ---
 

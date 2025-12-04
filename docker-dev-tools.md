@@ -25,14 +25,81 @@ Run popular development tools without installing them locally. Just Docker requi
 
 ## Alias Setup Instructions
 
-### Linux / macOS
+### Naming Convention: Using the `dt` Prefix
+
+**RECOMMENDED:** Use the `dt` (Docker Tools) prefix to avoid conflicts with natively installed tools.
+
+**Why use `dt` prefix?**
+- Prevents conflicts with existing installations (e.g., `dt python` vs native `python`)
+- Makes it clear you're using Docker-based tools
+- Allows you to have both native and Docker versions side-by-side
+- Consistent naming pattern across all tools
+
+**Example:**
+```bash
+# Without prefix (can conflict with native tools)
+alias python='docker run --rm -v ${PWD}:/app python:3.12 python'
+
+# With dt prefix (recommended - no conflicts!)
+alias dt-python='docker run --rm -v ${PWD}:/app python:3.12 python'
+```
+
+Throughout this guide, aliases are shown **without** the `dt` prefix for brevity, but you should add it when setting up your own aliases.
+
+### Linux / macOS (Bash/Zsh)
 Add aliases to `~/.bashrc`, `~/.zshrc`, or `~/.bash_profile`, then run `source ~/.bashrc`
 
+**Example with `dt` prefix:**
+```bash
+# Add to ~/.bashrc or ~/.zshrc
+alias dt-python='docker run --rm -it -v ${PWD}:/app -w /app python:3.12 python'
+alias dt-node='docker run --rm -it -v ${PWD}:/app -w /app node:22 node'
+alias dt-jupyter='docker run --rm -p 8888:8888 -v ${PWD}:/home/jovyan/work jupyter/base-notebook'
+
+# Reload shell
+source ~/.bashrc
+```
+
 ### Windows PowerShell
-Run `notepad $PROFILE` and add functions, then restart PowerShell or run `. $PROFILE`
+
+**IMPORTANT for Persistence:**
+Functions defined in PowerShell are **temporary** (only for current session) unless you add them to your PowerShell profile.
+
+**To make aliases permanent:**
+1. Open PowerShell profile: `notepad $PROFILE`
+   - If file doesn't exist: `New-Item -Path $PROFILE -Type File -Force`
+2. Add your functions to the file
+3. Save and reload: `. $PROFILE` or restart PowerShell
+
+**Example with `dt` prefix:**
+```powershell
+# Add to $PROFILE (opens with: notepad $PROFILE)
+function dt-python { docker run --rm -it -v ${PWD}:/app -w /app python:3.12 python $args }
+function dt-node { docker run --rm -it -v ${PWD}:/app -w /app node:22 node $args }
+function dt-jupyter { docker run --rm -p 8888:8888 -v ${PWD}:/home/jovyan/work jupyter/base-notebook }
+
+# To check if profile exists:
+Test-Path $PROFILE
+
+# To create profile if it doesn't exist:
+if (!(Test-Path $PROFILE)) { New-Item -Path $PROFILE -Type File -Force }
+
+# Reload profile after editing:
+. $PROFILE
+```
+
+**PowerShell Profile Location:**
+- Current User, Current Host: `~\Documents\PowerShell\Microsoft.PowerShell_profile.ps1`
+- Or use `$PROFILE` variable to find it automatically
 
 ### Windows CMD
 Create `.bat` files in a PATH folder (e.g., `C:\bin\`). Use `%CD%` instead of `${PWD}` and `%*` for args.
+
+**Example:**
+```batch
+@echo off
+docker run --rm -v %CD%:/app -w /app python:3.12 python %*
+```
 
 ---
 
