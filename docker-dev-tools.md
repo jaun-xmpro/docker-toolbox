@@ -9,7 +9,7 @@ Run popular development tools without installing them locally. Just Docker requi
 - [Static Site Generators](#static-site-generators) - Jekyll, Hugo, MkDocs
 - [Terminal Tools](#terminal-tools) - tmux, htop, ncdu, lazygit, lazydocker, ranger, fzf, bat, ripgrep, fd, jq, yq
 - [Programming Languages](#programming-languages) - Python, Jupyter Notebook, Node.js, Go, Rust, Ruby
-- [Development Environments & IDEs](#development-environments--ides) - VS Code Server, RStudio, Apache Zeppelin
+- [Development Environments & IDEs](#development-environments--ides) - VS Code Server, RStudio
 - [Testing Tools](#testing-tools) - Playwright
 - [Databases](#databases) - PostgreSQL, MySQL, Redis, MongoDB
 - [Message Brokers & IoT](#message-brokers--iot) - Mosquitto (MQTT), MQTT Explorer
@@ -317,16 +317,23 @@ function dfzf { docker run --rm -it -v ${PWD}:/data -w /data alpine sh -c "apk a
 Cat clone with syntax highlighting.
 
 ```bash
-docker run --rm -v ${PWD}:/data -w /data ghcr.io/sharkdp/bat /data/filename.py
+# View file with syntax highlighting
+docker run --rm -v ${PWD}:/data -w /data alpine sh -c "apk add --no-cache bat > /dev/null 2>&1 && bat filename.py"
+
+# With line numbers
+docker run --rm -v ${PWD}:/data -w /data alpine sh -c "apk add --no-cache bat > /dev/null 2>&1 && bat -n filename.py"
+
+# Show non-printable characters
+docker run --rm -v ${PWD}:/data -w /data alpine sh -c "apk add --no-cache bat > /dev/null 2>&1 && bat -A filename.py"
 ```
 
 **Aliases:**
 ```bash
 # Linux/macOS
-alias bat='docker run --rm -v ${PWD}:/data -w /data ghcr.io/sharkdp/bat'
+alias bat='docker run --rm -v ${PWD}:/data -w /data alpine sh -c "apk add --no-cache bat > /dev/null 2>&1 && bat"'
 
 # PowerShell
-function bat { docker run --rm -v ${PWD}:/data -w /data ghcr.io/sharkdp/bat $args }
+function bat { docker run --rm -v ${PWD}:/data -w /data alpine sh -c "apk add --no-cache bat > /dev/null 2>&1 && bat $args" }
 ```
 
 ---
@@ -689,32 +696,6 @@ function rstudio-tidy { docker run --rm -p 8787:8787 -e PASSWORD=rstudio -v ${PW
 
 ---
 
-### Apache Zeppelin
-Web-based notebook for data analytics (alternative to Jupyter).
-
-```bash
-# Start Zeppelin
-docker run --rm -p 8080:8080 apache/zeppelin
-
-# With persistent notebooks
-docker run --rm -p 8080:8080 -v ${PWD}/notebook:/notebook -v ${PWD}/logs:/logs apache/zeppelin
-
-# With Spark
-docker run --rm -p 8080:8080 -e ZEPPELIN_LOG_DIR='/logs' -e ZEPPELIN_NOTEBOOK_DIR='/notebook' apache/zeppelin
-```
-
-**Aliases:**
-```bash
-# Linux/macOS
-alias zeppelin='docker run --rm -p 8080:8080 apache/zeppelin'
-
-# PowerShell
-function zeppelin { docker run --rm -p 8080:8080 apache/zeppelin }
-```
-
-**Note:** Access Zeppelin at `http://localhost:8080`. Supports multiple interpreters including Spark, Python, R, and SQL.
-
----
 
 ## Testing Tools
 
