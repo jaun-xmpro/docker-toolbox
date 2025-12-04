@@ -31,3 +31,5 @@ scratch/
 # Install script backups
 *.backup.*
 *.tmp
+
+.claude/
