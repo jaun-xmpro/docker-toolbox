@@ -198,7 +198,9 @@ Usage: `dt-python script.py`, `dt-node app.js`, `dt-jupyter`
 
 Just run the Docker commands directly from [docker-dev-tools.md](docker-dev-tools.md). No installation needed.
 
-### Option 2: Quick Install Script (Linux/macOS)
+### Option 2: Quick Install Script
+
+#### Linux/macOS
 
 Use our automated installer to set up aliases:
 
@@ -217,8 +219,34 @@ cd docker-toolbox
 The script will:
 - Detect your shell (bash/zsh)
 - Let you choose which tools to install
+- Ask if you want the `dt-` prefix (recommended)
 - Backup your config file
 - Add aliases automatically
+
+#### Windows (PowerShell)
+
+Clone and run the PowerShell installer:
+
+```powershell
+git clone https://github.com/yourusername/docker-toolbox.git
+cd docker-toolbox
+.\install.ps1
+```
+
+Or if you get an execution policy error:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File install.ps1
+```
+
+The script will:
+- Check for Docker installation
+- Create PowerShell profile if it doesn't exist
+- Let you choose which tools to install
+- Ask if you want the `dt-` prefix (recommended)
+- Backup your profile
+- Add functions automatically
+- Show a summary with instructions
 
 ### Option 3: Manual Alias Setup
 
