@@ -405,7 +405,7 @@ Thanks to:
 
 <div align="center">
 
-**Found this useful?** [⭐ Star the repo](https://github.com/yourusername/docker-toolbox) and share it with your team!
+**Found this useful?** [⭐ Star the repo](https://github.com/jaun-xmpro/docker-toolbox) and share it with your team!
 
 **Have a tool to add?** [PRs welcome!](CONTRIBUTING.md)
 
