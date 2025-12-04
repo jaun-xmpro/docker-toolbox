@@ -8,9 +8,11 @@ Run popular development tools without installing them locally. Just Docker requi
 - [Build & Task Runners](#build--task-runners) - just, Make
 - [Static Site Generators](#static-site-generators) - Jekyll, Hugo, MkDocs
 - [Terminal Tools](#terminal-tools) - tmux, htop, ncdu, lazygit, lazydocker, ranger, fzf, bat, ripgrep, fd, jq, yq
-- [Programming Languages](#programming-languages) - Python, Node.js, Go, Rust, Ruby
+- [Programming Languages](#programming-languages) - Python, Jupyter Notebook, Node.js, Go, Rust, Ruby
+- [Development Environments & IDEs](#development-environments--ides) - VS Code Server, RStudio, Apache Zeppelin
 - [Testing Tools](#testing-tools) - Playwright
 - [Databases](#databases) - PostgreSQL, MySQL, Redis, MongoDB
+- [Message Brokers & IoT](#message-brokers--iot) - Mosquitto (MQTT), MQTT Explorer
 - [DevOps & Cloud CLI](#devops--cloud-cli) - AWS CLI, Azure CLI, Google Cloud, Terraform, Ansible, kubectl, Helm
 - [Code Quality & Linting](#code-quality--linting) - Prettier, Black, ShellCheck, hadolint, markdownlint
 - [Media & Documents](#media--documents) - Pandoc, FFmpeg, ImageMagick, yt-dlp
@@ -459,6 +461,60 @@ function dipython { docker run --rm -it -v ${PWD}:/app -w /app python:3.12 sh -c
 
 ---
 
+### Jupyter Notebook
+Interactive notebooks for data science, analysis, and documentation.
+
+```bash
+# Start Jupyter Notebook server
+docker run --rm -p 8888:8888 -v ${PWD}:/home/jovyan/work jupyter/base-notebook
+
+# Start JupyterLab (modern interface)
+docker run --rm -p 8888:8888 -v ${PWD}:/home/jovyan/work jupyter/datascience-notebook
+
+# With specific token for security
+docker run --rm -p 8888:8888 -v ${PWD}:/home/jovyan/work -e JUPYTER_TOKEN=mysecret jupyter/base-notebook
+
+# Start with no authentication (local development only!)
+docker run --rm -p 8888:8888 -v ${PWD}:/home/jovyan/work jupyter/base-notebook start-notebook.sh --NotebookApp.token=''
+
+# Scipy stack (includes NumPy, Pandas, Matplotlib, SciPy)
+docker run --rm -p 8888:8888 -v ${PWD}:/home/jovyan/work jupyter/scipy-notebook
+
+# With TensorFlow & Keras
+docker run --rm -p 8888:8888 -v ${PWD}:/home/jovyan/work jupyter/tensorflow-notebook
+
+# Convert notebook to HTML
+docker run --rm -v ${PWD}:/home/jovyan/work jupyter/base-notebook jupyter nbconvert --to html /home/jovyan/work/notebook.ipynb
+
+# Convert notebook to PDF (requires LaTeX)
+docker run --rm -v ${PWD}:/home/jovyan/work jupyter/base-notebook jupyter nbconvert --to pdf /home/jovyan/work/notebook.ipynb
+```
+
+**Aliases:**
+```bash
+# Linux/macOS
+alias jupyter='docker run --rm -p 8888:8888 -v ${PWD}:/home/jovyan/work jupyter/base-notebook'
+alias jupyterlab='docker run --rm -p 8888:8888 -v ${PWD}:/home/jovyan/work jupyter/datascience-notebook'
+alias jupyter-scipy='docker run --rm -p 8888:8888 -v ${PWD}:/home/jovyan/work jupyter/scipy-notebook'
+
+# PowerShell
+function jupyter { docker run --rm -p 8888:8888 -v ${PWD}:/home/jovyan/work jupyter/base-notebook }
+function jupyterlab { docker run --rm -p 8888:8888 -v ${PWD}:/home/jovyan/work jupyter/datascience-notebook }
+function jupyter-scipy { docker run --rm -p 8888:8888 -v ${PWD}:/home/jovyan/work jupyter/scipy-notebook }
+```
+
+**Available Jupyter Stacks:**
+- `jupyter/base-notebook` - Minimal notebook (smallest size)
+- `jupyter/scipy-notebook` - Scientific Python stack (NumPy, Pandas, Matplotlib, SciPy)
+- `jupyter/datascience-notebook` - Data science tools (Julia, Python, R)
+- `jupyter/tensorflow-notebook` - TensorFlow & Keras for deep learning
+- `jupyter/pyspark-notebook` - PySpark for big data processing
+- `jupyter/all-spark-notebook` - Spark with Python, R, and Scala
+
+**Note:** Notebooks are saved in your current directory under the `work` folder. The server will display a URL with a token - copy it to your browser to access Jupyter.
+
+---
+
 ### Node.js
 JavaScript runtime.
 
@@ -572,6 +628,91 @@ function druby { docker run --rm -it -v ${PWD}:/app -w /app ruby:3.3 ruby $args 
 function dirb { docker run --rm -it -v ${PWD}:/app -w /app ruby:3.3 irb }
 function dbundle { docker run --rm -v ${PWD}:/app -w /app ruby:3.3 bundle $args }
 ```
+
+---
+
+## Development Environments & IDEs
+
+### VS Code Server (code-server)
+Full VS Code experience in your browser.
+
+```bash
+# Start VS Code server
+docker run --rm -p 8080:8080 -v ${PWD}:/home/coder/project codercom/code-server --auth none
+
+# With password protection
+docker run --rm -p 8080:8080 -v ${PWD}:/home/coder/project -e PASSWORD=mysecret codercom/code-server
+
+# With extensions pre-installed
+docker run --rm -p 8080:8080 -v ${PWD}:/home/coder/project codercom/code-server --auth none --install-extension ms-python.python
+```
+
+**Aliases:**
+```bash
+# Linux/macOS
+alias vscode-server='docker run --rm -p 8080:8080 -v ${PWD}:/home/coder/project codercom/code-server --auth none'
+
+# PowerShell
+function vscode-server { docker run --rm -p 8080:8080 -v ${PWD}:/home/coder/project codercom/code-server --auth none }
+```
+
+**Note:** Access VS Code at `http://localhost:8080`. All your VS Code settings and extensions will be saved in the mounted directory.
+
+---
+
+### RStudio
+IDE for R programming and data analysis.
+
+```bash
+# Start RStudio Server
+docker run --rm -p 8787:8787 -e PASSWORD=rstudio -v ${PWD}:/home/rstudio rocker/rstudio
+
+# With tidyverse packages
+docker run --rm -p 8787:8787 -e PASSWORD=rstudio -v ${PWD}:/home/rstudio rocker/tidyverse
+
+# With verse (tidyverse + publishing tools)
+docker run --rm -p 8787:8787 -e PASSWORD=rstudio -v ${PWD}:/home/rstudio rocker/verse
+```
+
+**Aliases:**
+```bash
+# Linux/macOS
+alias rstudio='docker run --rm -p 8787:8787 -e PASSWORD=rstudio -v ${PWD}:/home/rstudio rocker/rstudio'
+alias rstudio-tidy='docker run --rm -p 8787:8787 -e PASSWORD=rstudio -v ${PWD}:/home/rstudio rocker/tidyverse'
+
+# PowerShell
+function rstudio { docker run --rm -p 8787:8787 -e PASSWORD=rstudio -v ${PWD}:/home/rstudio rocker/rstudio }
+function rstudio-tidy { docker run --rm -p 8787:8787 -e PASSWORD=rstudio -v ${PWD}:/home/rstudio rocker/tidyverse }
+```
+
+**Note:** Access RStudio at `http://localhost:8787`. Login with username `rstudio` and password `rstudio`.
+
+---
+
+### Apache Zeppelin
+Web-based notebook for data analytics (alternative to Jupyter).
+
+```bash
+# Start Zeppelin
+docker run --rm -p 8080:8080 apache/zeppelin
+
+# With persistent notebooks
+docker run --rm -p 8080:8080 -v ${PWD}/notebook:/notebook -v ${PWD}/logs:/logs apache/zeppelin
+
+# With Spark
+docker run --rm -p 8080:8080 -e ZEPPELIN_LOG_DIR='/logs' -e ZEPPELIN_NOTEBOOK_DIR='/notebook' apache/zeppelin
+```
+
+**Aliases:**
+```bash
+# Linux/macOS
+alias zeppelin='docker run --rm -p 8080:8080 apache/zeppelin'
+
+# PowerShell
+function zeppelin { docker run --rm -p 8080:8080 apache/zeppelin }
+```
+
+**Note:** Access Zeppelin at `http://localhost:8080`. Supports multiple interpreters including Spark, Python, R, and SQL.
 
 ---
 
@@ -715,6 +856,86 @@ alias dmongosh='docker run --rm -it mongo:7 mongosh'
 # PowerShell
 function mongo { docker run --rm -p 27017:27017 mongo:7 }
 function dmongosh { docker run --rm -it mongo:7 mongosh $args }
+```
+
+---
+
+## Message Brokers & IoT
+
+### Mosquitto (MQTT Broker)
+Lightweight MQTT broker for IoT messaging.
+
+```bash
+# Start MQTT broker with default config
+docker run --rm -p 1883:1883 -p 9001:9001 eclipse-mosquitto
+
+# With persistent data
+docker run --rm -p 1883:1883 -p 9001:9001 -v mosquitto-data:/mosquitto/data eclipse-mosquitto
+
+# With custom config
+docker run --rm -p 1883:1883 -p 9001:9001 -v ${PWD}/mosquitto.conf:/mosquitto/config/mosquitto.conf eclipse-mosquitto
+
+# Enable WebSockets (port 9001)
+docker run --rm -p 1883:1883 -p 9001:9001 eclipse-mosquitto
+
+# Subscribe to topic
+docker run --rm eclipse-mosquitto mosquitto_sub -h host.docker.internal -t "test/topic"
+
+# Publish message
+docker run --rm eclipse-mosquitto mosquitto_pub -h host.docker.internal -t "test/topic" -m "Hello MQTT"
+```
+
+**Aliases:**
+```bash
+# Linux/macOS
+alias mosquitto='docker run --rm -p 1883:1883 -p 9001:9001 eclipse-mosquitto'
+alias mqtt-sub='docker run --rm eclipse-mosquitto mosquitto_sub -h host.docker.internal'
+alias mqtt-pub='docker run --rm eclipse-mosquitto mosquitto_pub -h host.docker.internal'
+
+# PowerShell
+function mosquitto { docker run --rm -p 1883:1883 -p 9001:9001 eclipse-mosquitto }
+function mqtt-sub { docker run --rm eclipse-mosquitto mosquitto_sub -h host.docker.internal $args }
+function mqtt-pub { docker run --rm eclipse-mosquitto mosquitto_pub -h host.docker.internal $args }
+```
+
+**Note:** Port 1883 is for MQTT, port 9001 is for WebSockets. Use `host.docker.internal` to connect to MQTT broker running on your host.
+
+---
+
+### MQTT Explorer
+Visual MQTT client for exploring topics and messages.
+
+```bash
+# Run MQTT Explorer (GUI app)
+docker run --rm -p 4000:4000 -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix smeagolworms4/mqtt-explorer
+
+# Alternative: Use web-based MQTT client (HiveMQ)
+docker run --rm -p 8080:8080 hivemq/hivemq-mqtt-web-client
+```
+
+**Note:** MQTT Explorer is a GUI application and requires X11 forwarding on Linux. For easier access, consider:
+- **Windows/macOS**: Use native MQTT Explorer app from [mqtt-explorer.com](http://mqtt-explorer.com/)
+- **Web-based alternative**: HiveMQ Web Client (shown above)
+- **CLI alternative**: Use mosquitto_sub/mosquitto_pub commands
+
+**Web-Based MQTT Clients (easier alternative):**
+```bash
+# HiveMQ Web Client
+docker run --rm -p 8080:8080 cedalo/management-center
+
+# Access at http://localhost:8080
+```
+
+**Aliases:**
+```bash
+# Linux/macOS (with X11)
+alias mqtt-explorer='docker run --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix smeagolworms4/mqtt-explorer'
+
+# Web-based MQTT client (cross-platform)
+alias mqtt-web='docker run --rm -p 8080:8080 cedalo/management-center'
+
+# PowerShell (web-based client)
+function mqtt-web { docker run --rm -p 8080:8080 cedalo/management-center }
 ```
 
 ---

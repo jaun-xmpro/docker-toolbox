@@ -39,16 +39,18 @@ Docker Toolbox provides ready-to-use Docker commands for 100+ development tools:
 
 ## What's Inside?
 
-### 100+ Tools Across 13 Categories
+### 100+ Tools Across 15 Categories
 
 | Category | Tools |
 |----------|-------|
 | **Build & Task Runners** | just, Make |
 | **Static Site Generators** | Jekyll, Hugo, MkDocs |
 | **Terminal Tools** | tmux, htop, ncdu, lazygit, lazydocker, ranger, fzf, bat, ripgrep, fd, jq, yq |
-| **Programming Languages** | Python, Node.js, Go, Rust, Ruby |
+| **Programming Languages** | Python, Jupyter Notebook, Node.js, Go, Rust, Ruby |
+| **Development Environments** | VS Code Server, RStudio, Apache Zeppelin |
 | **Testing Tools** | Playwright |
 | **Databases** | PostgreSQL, MySQL, Redis, MongoDB |
+| **Message Brokers & IoT** | Mosquitto (MQTT), MQTT Explorer |
 | **DevOps & Cloud** | AWS CLI, Azure CLI, Google Cloud, Terraform, Ansible, kubectl, Helm |
 | **Code Quality** | Prettier, Black, ShellCheck, hadolint, markdownlint |
 | **Media & Documents** | Pandoc, FFmpeg, ImageMagick, yt-dlp |
@@ -72,6 +74,15 @@ See [docker-dev-tools.md](docker-dev-tools.md) for the complete list with usage 
 ```bash
 # Run Python script without installing Python
 docker run --rm -v ${PWD}:/app -w /app python:3.12 python script.py
+
+# Start Jupyter Notebook for data science
+docker run --rm -p 8888:8888 -v ${PWD}:/home/jovyan/work jupyter/scipy-notebook
+
+# Start VS Code in browser
+docker run --rm -p 8080:8080 -v ${PWD}:/home/coder/project codercom/code-server --auth none
+
+# Run MQTT broker for IoT
+docker run --rm -p 1883:1883 -p 9001:9001 eclipse-mosquitto
 
 # Format code with Prettier
 docker run --rm -v ${PWD}:/work tmknom/prettier --write .

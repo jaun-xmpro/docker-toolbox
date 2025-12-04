@@ -102,6 +102,7 @@ ALIASES
 # Essential tools
 alias dpy='docker run --rm -it -v ${PWD}:/app -w /app python:3.12 python'
 alias dnode='docker run --rm -it -v ${PWD}:/app -w /app node:22 node'
+alias jupyter='docker run --rm -p 8888:8888 -v ${PWD}:/home/jovyan/work jupyter/base-notebook'
 alias prettier='docker run --rm -v ${PWD}:/work tmknom/prettier'
 alias jq='docker run --rm -i ghcr.io/jqlang/jq'
 
@@ -111,6 +112,8 @@ ALIASES
             cat >> "$CONFIG_FILE" << 'ALIASES'
 # Programming Languages
 alias dpip='docker run --rm -v ${PWD}:/app -w /app python:3.12 pip'
+alias jupyterlab='docker run --rm -p 8888:8888 -v ${PWD}:/home/jovyan/work jupyter/datascience-notebook'
+alias jupyter-scipy='docker run --rm -p 8888:8888 -v ${PWD}:/home/jovyan/work jupyter/scipy-notebook'
 alias dnpm='docker run --rm -v ${PWD}:/app -w /app node:22 npm'
 alias dgo='docker run --rm -v ${PWD}:/app -w /app golang:1.22 go'
 alias druby='docker run --rm -it -v ${PWD}:/app -w /app ruby:3.3 ruby'
