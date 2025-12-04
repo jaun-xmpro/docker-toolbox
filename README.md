@@ -379,7 +379,7 @@ We welcome contributions! Whether it's adding new tools, improving documentation
 
 If you find this project useful, please consider giving it a star! It helps others discover the project.
 
-[![Star History Chart](https://api.star-history.com/svg?repos=yourusername/docker-toolbox&type=Date)](https://star-history.com/#yourusername/docker-toolbox&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=jaun-xmpro/docker-toolbox&type=Date)](https://star-history.com/#jaun-xmpro/docker-toolbox&Date)
 
 ---
 
@@ -409,7 +409,7 @@ Thanks to:
 
 **Have a tool to add?** [PRs welcome!](CONTRIBUTING.md)
 
-**Found a bug?** [Open an issue](https://github.com/yourusername/docker-toolbox/issues)
+**Found a bug?** [Open an issue](https://github.com/jaun-xmpro/docker-toolbox/issues)
 
 Made with ❤️ by the community
 
