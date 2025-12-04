@@ -1,0 +1,33 @@
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS files
+Thumbs.db
+desktop.ini
+
+# Test files
+test/
+temp/
+*.tmp
+
+# Node modules (if any)
+node_modules/
+
+# Python cache (if any)
+__pycache__/
+*.pyc
+*.pyo
+
+# Personal notes
+notes.md
+TODO.md
+scratch/
+
+# Install script backups
+*.backup.*
+*.tmp
