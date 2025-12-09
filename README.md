@@ -53,7 +53,7 @@ Docker Toolbox provides ready-to-use Docker commands for 100+ development tools:
 | **Message Brokers & IoT** | Mosquitto (MQTT), MQTT Explorer |
 | **DevOps & Cloud** | AWS CLI, Azure CLI, Google Cloud, Terraform, Ansible, kubectl, Helm |
 | **Code Quality** | Prettier, Black, ShellCheck, hadolint, markdownlint |
-| **Media & Documents** | Pandoc, FFmpeg, ImageMagick, yt-dlp |
+| **Media & Documents** | Pandoc, FFmpeg, ImageMagick, yt-dlp, Typst |
 | **Networking & Security** | nmap, curl, Trivy, testssl |
 | **API Development** | Swagger UI, HTTPie, Newman |
 | **Git Tools** | git, GitHub CLI |

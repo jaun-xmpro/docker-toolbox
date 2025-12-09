@@ -15,7 +15,7 @@ Run popular development tools without installing them locally. Just Docker requi
 - [Message Brokers & IoT](#message-brokers--iot) - Mosquitto (MQTT), MQTT Explorer
 - [DevOps & Cloud CLI](#devops--cloud-cli) - AWS CLI, Azure CLI, Google Cloud, Terraform, Ansible, kubectl, Helm
 - [Code Quality & Linting](#code-quality--linting) - Prettier, Black, ShellCheck, hadolint, markdownlint
-- [Media & Documents](#media--documents) - Pandoc, FFmpeg, ImageMagick, yt-dlp
+- [Media & Documents](#media--documents) - Pandoc, FFmpeg, ImageMagick, yt-dlp, Typst
 - [Networking & Security](#networking--security) - nmap, curl, Trivy, testssl
 - [API Development](#api-development) - Swagger UI, HTTPie, Newman
 - [Git Tools](#git-tools) - git, GitHub CLI
@@ -1334,6 +1334,43 @@ alias yt-dlp='docker run --rm -v ${PWD}:/downloads jauderho/yt-dlp'
 # PowerShell
 function yt-dlp { docker run --rm -v ${PWD}:/downloads jauderho/yt-dlp $args }
 ```
+
+---
+
+### Typst
+Modern markup-based typesetting system (alternative to LaTeX).
+
+```bash
+# Compile document to PDF
+docker run --rm -v ${PWD}:/data ghcr.io/typst/typst compile /data/document.typ
+
+# Watch mode (recompile on changes)
+docker run --rm -v ${PWD}:/data ghcr.io/typst/typst watch /data/document.typ
+
+# Custom output path
+docker run --rm -v ${PWD}:/data ghcr.io/typst/typst compile /data/document.typ /data/output.pdf
+
+# Get version
+docker run --rm ghcr.io/typst/typst --version
+
+# Get help
+docker run --rm ghcr.io/typst/typst --help
+```
+
+**Aliases:**
+```bash
+# Linux/macOS
+alias dt-typst='docker run --rm -v ${PWD}:/data ghcr.io/typst/typst'
+alias dt-typst-compile='docker run --rm -v ${PWD}:/data ghcr.io/typst/typst compile'
+alias dt-typst-watch='docker run --rm -v ${PWD}:/data ghcr.io/typst/typst watch'
+
+# PowerShell
+function dt-typst { docker run --rm -v ${PWD}:/data ghcr.io/typst/typst $args }
+function dt-typst-compile { docker run --rm -v ${PWD}:/data ghcr.io/typst/typst compile $args }
+function dt-typst-watch { docker run --rm -v ${PWD}:/data ghcr.io/typst/typst watch $args }
+```
+
+**Note:** Typst files use the `.typ` extension. Compiled output is PDF by default. Visit [typst.app](https://typst.app) for documentation and examples.
 
 ---
 
