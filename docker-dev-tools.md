@@ -253,21 +253,42 @@ function dmake { docker run --rm -v ${PWD}:/workdir -w /workdir alpine sh -c "ap
 Terminal multiplexer for managing multiple sessions.
 
 ```bash
-# Interactive tmux session
+# Simple tmux session (ephemeral)
 docker run --rm -it alpine sh -c "apk add --no-cache tmux && tmux"
 
-# Using a pre-built image
-docker run --rm -it dockcross/linux-x64 tmux
+# With mounted working directory (access your files)
+docker run --rm -it -v ${PWD}:/workspace -w /workspace alpine sh -c "apk add --no-cache tmux bash git && tmux"
+
+# With your own tmux config (mount from home directory)
+docker run --rm -it -v ${PWD}:/workspace -v ~/.tmux.conf:/root/.tmux.conf -w /workspace alpine sh -c "apk add --no-cache tmux bash git && tmux"
+
+# Persistent tmux environment (named container, keeps sessions)
+docker run -it --name tmux-dev -v ${PWD}:/workspace -w /workspace alpine sh -c "apk add --no-cache tmux bash git vim && tmux"
+
+# Reconnect to existing tmux container
+docker start -ai tmux-dev
+
+# Full development environment with common tools
+docker run --rm -it -v ${PWD}:/workspace -w /workspace alpine sh -c "apk add --no-cache tmux bash git vim curl python3 nodejs && tmux"
 ```
 
 **Aliases:**
 ```bash
-# Linux/macOS
-alias dtmux='docker run --rm -it alpine sh -c "apk add --no-cache tmux && tmux"'
+# Linux/macOS (mounts ~/.tmux.conf if it exists)
+alias dt-tmux='docker run --rm -it -v ${PWD}:/workspace -v ~/.tmux.conf:/root/.tmux.conf -w /workspace alpine sh -c "apk add --no-cache tmux bash git && tmux"'
+alias dt-tmux-dev='docker run -it --name tmux-dev -v ${PWD}:/workspace -v ~/.tmux.conf:/root/.tmux.conf -w /workspace alpine sh -c "apk add --no-cache tmux bash git vim && tmux"'
 
-# PowerShell
-function dtmux { docker run --rm -it alpine sh -c "apk add --no-cache tmux && tmux" }
+# PowerShell (mounts ~/.tmux.conf if it exists)
+function dt-tmux { docker run --rm -it -v ${PWD}:/workspace -v ~/.tmux.conf:/root/.tmux.conf -w /workspace alpine sh -c "apk add --no-cache tmux bash git && tmux" }
+function dt-tmux-dev { docker run -it --name tmux-dev -v ${PWD}:/workspace -v ~/.tmux.conf:/root/.tmux.conf -w /workspace alpine sh -c "apk add --no-cache tmux bash git vim && tmux" }
 ```
+
+**Notes:**
+- **With `--rm`**: Container and tmux sessions are deleted when you exit (good for temporary work)
+- **Without `--rm`**: Use a named container (e.g., `--name tmux-dev`) to persist sessions. Reconnect with `docker start -ai tmux-dev`
+- **Windows**: Works well via Docker - mount your project directory to work on files inside the containerized tmux environment
+- **Use case**: Great for containerized development environments where you want multiple panes/windows working on the same project
+- **Custom config**: Mount your own `~/.tmux.conf` with `-v ~/.tmux.conf:/root/.tmux.conf` to use your personal tmux settings
 
 ---
 
