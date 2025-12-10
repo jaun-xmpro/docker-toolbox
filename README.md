@@ -47,7 +47,7 @@ Docker Toolbox provides ready-to-use Docker commands for 100+ development tools:
 | **Static Site Generators** | Jekyll, Hugo, MkDocs |
 | **Terminal Tools** | tmux, htop, ncdu, lazygit, lazydocker, ranger, fzf, bat, ripgrep, fd, jq, yq |
 | **Programming Languages** | Python, Jupyter Notebook, Node.js, Go, Rust, Ruby |
-| **Development Environments** | VS Code Server, RStudio |
+| **Development Environments** | VS Code Server, RStudio, Vert |
 | **Testing Tools** | Playwright |
 | **Databases** | PostgreSQL, MySQL, Redis, MongoDB |
 | **Message Brokers & IoT** | Mosquitto (MQTT), MQTT Explorer |
