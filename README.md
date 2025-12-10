@@ -139,6 +139,88 @@ Usage: `dt-python script.py`, `dt-node app.js`, `dt-jupyter`
 
 ---
 
+## Docker Toolbox Manager
+
+The installer automatically adds management commands to help you work with your Docker tools.
+
+### Available Manager Commands
+
+```bash
+dt-list              # List all installed Docker Toolbox tools
+dt-info <tool>       # Show detailed info about a specific tool
+dt-search <keyword>  # Search for tools by keyword
+dt-images            # Show Docker images used by your tools
+dt-help              # Show help message
+```
+
+### Examples
+
+**List all installed tools:**
+```bash
+dt-list
+```
+Output:
+```
+Installed Docker Toolbox functions:
+
+  dt-lazydocker
+  dt-lazygit
+  dt-rg
+  dt-typst
+  dt-typst-compile
+  dt-typst-watch
+  dt-yq
+
+Usage: <function-name> [args]
+```
+
+**Get info about a specific tool:**
+```bash
+dt-info typst
+# Or with the dt- prefix:
+dt-info dt-typst
+```
+Output shows the Docker command, image, and whether it's pulled.
+
+**Search for tools:**
+```bash
+dt-search typst
+```
+Output:
+```
+Searching for 'typst' in Docker Toolbox functions:
+
+  dt-typst
+  dt-typst-compile
+  dt-typst-watch
+```
+
+**View Docker images:**
+```bash
+dt-images
+```
+Output:
+```
+Docker images used by Docker Toolbox:
+
+Image                                    Status       Size
+─────────────────────────────────────────────────────────────
+alpine                                   Pulled       7.8MB
+ghcr.io/typst/typst                      Pulled       45MB
+lazyteam/lazydocker                      Pulled       28MB
+lazyteam/lazygit                         Pulled       32MB
+mikefarah/yq                             Pulled       15MB
+```
+
+### How It Works
+
+- **Windows PowerShell**: The installer adds these as PowerShell functions to your `$PROFILE`
+- **Linux/macOS**: The installer adds these as bash/zsh functions to your shell config
+
+These manager commands are automatically included when you run the installer script.
+
+---
+
 ## Limitations
 
 ### Known Constraints
