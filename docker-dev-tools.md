@@ -46,10 +46,10 @@ For detailed security considerations, see the [main README](README.md#important-
 
 ### Naming Convention: Using the `dt` Prefix
 
-**RECOMMENDED:** Use the `dt` (Docker Tools) prefix to avoid conflicts with natively installed tools.
+**RECOMMENDED:** Use the `dt` prefix (Docker Tools) to avoid conflicts with natively installed tools.
 
 **Why use `dt` prefix?**
-- Prevents conflicts with existing installations (e.g., `dt python` vs native `python`)
+- Prevents conflicts with existing installations (e.g., `dtpython` vs native `python`)
 - Makes it clear you're using Docker-based tools
 - Allows you to have both native and Docker versions side-by-side
 - Consistent naming pattern across all tools
@@ -60,10 +60,13 @@ For detailed security considerations, see the [main README](README.md#important-
 alias python='docker run --rm -v ${PWD}:/app python:3.12 python'
 
 # With dt prefix (recommended - no conflicts!)
-alias dt-python='docker run --rm -v ${PWD}:/app python:3.12 python'
+alias dtpython='docker run --rm -v ${PWD}:/app python:3.12 python'
 ```
 
-Throughout this guide, aliases are shown **without** the `dt` prefix for brevity, but you should add it when setting up your own aliases.
+**Throughout this guide:**
+- Bash/Zsh examples show: `alias dtpython=...`
+- PowerShell examples show: `function dtpython { ... }`
+- All function names use the `dt` prefix (e.g., `dtpython`, `dtnode`, `dtjupyter`)
 
 ### Linux / macOS (Bash/Zsh)
 Add aliases to `~/.bashrc`, `~/.zshrc`, or `~/.bash_profile`, then run `source ~/.bashrc`
@@ -71,9 +74,9 @@ Add aliases to `~/.bashrc`, `~/.zshrc`, or `~/.bash_profile`, then run `source ~
 **Example with `dt` prefix:**
 ```bash
 # Add to ~/.bashrc or ~/.zshrc
-alias dt-python='docker run --rm -it -v ${PWD}:/app -w /app python:3.12 python'
-alias dt-node='docker run --rm -it -v ${PWD}:/app -w /app node:22 node'
-alias dt-jupyter='docker run --rm -p 8888:8888 -v ${PWD}:/home/jovyan/work jupyter/base-notebook'
+alias dtpython='docker run --rm -it -v ${PWD}:/app -w /app python:3.12 python'
+alias dtnode='docker run --rm -it -v ${PWD}:/app -w /app node:22 node'
+alias dtjupyter='docker run --rm -p 8888:8888 -v ${PWD}:/home/jovyan/work jupyter/base-notebook'
 
 # Reload shell
 source ~/.bashrc
@@ -93,9 +96,9 @@ Functions defined in PowerShell are **temporary** (only for current session) unl
 **Example with `dt` prefix:**
 ```powershell
 # Add to $PROFILE (opens with: notepad $PROFILE)
-function dt-python { docker run --rm -it -v ${PWD}:/app -w /app python:3.12 python $args }
-function dt-node { docker run --rm -it -v ${PWD}:/app -w /app node:22 node $args }
-function dt-jupyter { docker run --rm -p 8888:8888 -v ${PWD}:/home/jovyan/work jupyter/base-notebook }
+function dtpython { docker run --rm -it -v ${PWD}:/app -w /app python:3.12 python $args }
+function dtnode { docker run --rm -it -v ${PWD}:/app -w /app node:22 node $args }
+function dtjupyter { docker run --rm -p 8888:8888 -v ${PWD}:/home/jovyan/work jupyter/base-notebook }
 
 # To check if profile exists:
 Test-Path $PROFILE
@@ -105,6 +108,14 @@ if (!(Test-Path $PROFILE)) { New-Item -Path $PROFILE -Type File -Force }
 
 # Reload profile after editing:
 . $PROFILE
+```
+
+**Or use the interactive installer:**
+```powershell
+# Clone the repo and run the installer
+git clone https://github.com/yourusername/docker-toolbox.git
+cd docker-toolbox
+.\install-interactive.ps1
 ```
 
 **PowerShell Profile Location:**

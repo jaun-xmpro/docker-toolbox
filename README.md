@@ -138,125 +138,47 @@ docker run --rm -v ${PWD}:/work -w /work mcr.microsoft.com/playwright:v1.40.0 np
 
 ### Using Aliases (Recommended)
 
-Instead of typing long Docker commands, set up aliases.
+Instead of typing long Docker commands, set up aliases using our installer.
 
-**💡 Pro Tip:** Use the `dt-` prefix (Docker Tools) to avoid conflicts with natively installed tools!
+**💡 Naming:** Functions use the `dt` prefix (e.g., `dtpython`, `dtnode`) to avoid conflicts with natively installed tools.
+
+#### Windows PowerShell
+
+Run the interactive installer:
+
+```powershell
+git clone https://github.com/yourusername/docker-toolbox.git
+cd docker-toolbox
+.\install-interactive.ps1
+```
+
+The installer will:
+- Show you all 87 available tools in a selection window
+- Let you choose which ones to add (Ctrl+Click for multiple)
+- Add the functions to your PowerShell `$PROFILE`
+- Create a backup before making changes
+
+Then reload: `. $PROFILE` (or restart PowerShell)
+
+Usage examples: `dtpython script.py`, `dtnode app.js`, `dtjupyter`
 
 #### Linux / macOS (Bash/Zsh)
 
-Add to `~/.bashrc` or `~/.zshrc`:
+Manual setup - add to `~/.bashrc` or `~/.zshrc`:
 
 ```bash
-# Recommended: with dt- prefix (no conflicts!)
-alias dt-python='docker run --rm -it -v ${PWD}:/app -w /app python:3.12 python'
-alias dt-node='docker run --rm -it -v ${PWD}:/app -w /app node:22 node'
-alias dt-jupyter='docker run --rm -p 8888:8888 -v ${PWD}:/home/jovyan/work jupyter/base-notebook'
-alias dt-rg='docker run --rm -v ${PWD}:/data -w /data alpine sh -c "apk add --no-cache ripgrep > /dev/null 2>&1 && rg"'
+# Example aliases with dt prefix (no conflicts!)
+alias dtpython='docker run --rm -it -v ${PWD}:/app -w /app python:3.12 python'
+alias dtnode='docker run --rm -it -v ${PWD}:/app -w /app node:22 node'
+alias dtjupyter='docker run --rm -p 8888:8888 -v ${PWD}:/home/jovyan/work jupyter/base-notebook'
+alias dtrg='docker run --rm -v ${PWD}:/data -w /data alpine sh -c "apk add --no-cache ripgrep > /dev/null 2>&1 && rg"'
 ```
 
 Then reload: `source ~/.bashrc`
 
-Usage: `dt-python script.py`, `dt-node app.js`, `dt-jupyter`
+Usage: `dtpython script.py`, `dtnode app.js`, `dtjupyter`
 
-#### Windows PowerShell
-
-Add to your PowerShell profile (`notepad $PROFILE`):
-
-```powershell
-# Recommended: with dt- prefix (no conflicts!)
-function dt-python { docker run --rm -it -v ${PWD}:/app -w /app python:3.12 python $args }
-function dt-node { docker run --rm -it -v ${PWD}:/app -w /app node:22 node $args }
-function dt-jupyter { docker run --rm -p 8888:8888 -v ${PWD}:/home/jovyan/work jupyter/base-notebook }
-function dt-rg { docker run --rm -v ${PWD}:/data -w /data alpine sh -c "apk add --no-cache ripgrep > /dev/null 2>&1 && rg $args" }
-```
-
-**Important:** Save the file, then reload: `. $PROFILE` (or restart PowerShell)
-
-**Note:** Functions in PowerShell are temporary unless added to your profile file. The profile persists across sessions.
-
-Usage: `dt-python script.py`, `dt-node app.js`, `dt-jupyter`
-
----
-
-## Docker Toolbox Manager
-
-The installer automatically adds management commands to help you work with your Docker tools.
-
-### Available Manager Commands
-
-```bash
-dt-list              # List all installed Docker Toolbox tools
-dt-info <tool>       # Show detailed info about a specific tool
-dt-search <keyword>  # Search for tools by keyword
-dt-images            # Show Docker images used by your tools
-dt-help              # Show help message
-```
-
-### Examples
-
-**List all installed tools:**
-```bash
-dt-list
-```
-Output:
-```
-Installed Docker Toolbox functions:
-
-  dt-lazydocker
-  dt-lazygit
-  dt-rg
-  dt-typst
-  dt-typst-compile
-  dt-typst-watch
-  dt-yq
-
-Usage: <function-name> [args]
-```
-
-**Get info about a specific tool:**
-```bash
-dt-info typst
-# Or with the dt- prefix:
-dt-info dt-typst
-```
-Output shows the Docker command, image, and whether it's pulled.
-
-**Search for tools:**
-```bash
-dt-search typst
-```
-Output:
-```
-Searching for 'typst' in Docker Toolbox functions:
-
-  dt-typst
-  dt-typst-compile
-  dt-typst-watch
-```
-
-**View Docker images:**
-```bash
-dt-images
-```
-Output:
-```
-Docker images used by Docker Toolbox:
-
-Image                                    Status       Size
-─────────────────────────────────────────────────────────────
-alpine                                   Pulled       7.8MB
-ghcr.io/typst/typst                      Pulled       45MB
-lazyteam/lazydocker                      Pulled       28MB
-lazyteam/lazygit                         Pulled       32MB
-mikefarah/yq                             Pulled       15MB
-```
-
-### How It Works
-
-- **Windows PowerShell**: The installer adds these as PowerShell functions to your `$PROFILE`
-- **Linux/macOS**: The installer adds these as bash/zsh functions to your shell config
-
-These manager commands are automatically included when you run the installer script.
+**See [docker-dev-tools.md](docker-dev-tools.md) for all 87 tools with copy-paste ready commands.**
 
 ---
 
@@ -315,76 +237,59 @@ These manager commands are automatically included when you run the installer scr
 
 ## Installation
 
-### Option 1: Use Directly (No Installation)
+### Option 1: Use Directly (No Setup Required)
 
-Just run the Docker commands directly from [docker-dev-tools.md](docker-dev-tools.md). No installation needed.
+Just run the Docker commands directly from [docker-dev-tools.md](docker-dev-tools.md). No setup needed.
 
-### Option 2: Quick Install Script
+### Option 2: Interactive Installer (Windows PowerShell)
 
-#### Linux/macOS
-
-Use our automated installer to set up aliases:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/yourusername/docker-toolbox/main/install.sh | bash
-```
-
-Or clone and run:
-
-```bash
-git clone https://github.com/yourusername/docker-toolbox.git
-cd docker-toolbox
-./install.sh
-```
-
-The script will:
-- Detect your shell (bash/zsh)
-- Let you choose which tools to install
-- Ask if you want the `dt-` prefix (recommended)
-- Backup your config file
-- Add aliases automatically
-
-#### Windows (PowerShell)
-
-Clone and run the PowerShell installer:
+For Windows users, we provide an interactive installer:
 
 ```powershell
 git clone https://github.com/yourusername/docker-toolbox.git
 cd docker-toolbox
-.\install.ps1
+.\install-interactive.ps1
 ```
 
 Or if you get an execution policy error:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File install.ps1
+powershell -ExecutionPolicy Bypass -File install-interactive.ps1
 ```
 
-The script will:
+The installer will:
 - Check for Docker installation
+- Show all 87 tools in a selection window (Ctrl+Click for multiple)
 - Create PowerShell profile if it doesn't exist
-- Let you choose which tools to install
-- Ask if you want the `dt-` prefix (recommended)
-- Backup your profile
-- Add functions automatically
-- Show a summary with instructions
+- Backup your profile before making changes
+- Add selected functions with `dt` prefix (e.g., `dtpython`, `dtnode`)
+- Show usage instructions
 
-### Option 3: Manual Alias Setup
+### Option 3: Manual Setup
+
+#### Linux / macOS (Bash/Zsh)
 
 1. Browse [docker-dev-tools.md](docker-dev-tools.md)
-2. Copy the aliases for tools you need
-3. Add to your shell config file:
-   - Linux/macOS: `~/.bashrc` or `~/.zshrc`
-   - Windows: PowerShell profile (`$PROFILE`)
-4. Reload your shell
+2. Copy the aliases/functions for tools you need
+3. Add to your shell config file (`~/.bashrc` or `~/.zshrc`)
+4. Reload: `source ~/.bashrc`
 
-### Option 4: Clone & Browse
+#### Windows (PowerShell)
+
+1. Open your profile: `notepad $PROFILE`
+   - Create if needed: `New-Item -Path $PROFILE -Type File -Force`
+2. Browse [docker-dev-tools.md](docker-dev-tools.md)
+3. Copy the PowerShell functions for tools you need
+4. Paste into your profile and save
+5. Reload: `. $PROFILE`
+
+### Option 4: Browse Only
 
 ```bash
 git clone https://github.com/yourusername/docker-toolbox.git
 cd docker-toolbox
 
-# Browse documentation
+# Browse all available tools
 cat docker-dev-tools.md
 ```
 
@@ -392,20 +297,13 @@ cat docker-dev-tools.md
 
 ## Updating or Removing Tools
 
-### Using the Interactive Installer (Recommended)
+### Using the Interactive Installer (Windows)
 
 The easiest way to add, remove, or change your installed tools is to **run the interactive installer again**:
 
-#### Windows PowerShell
 ```powershell
 cd docker-toolbox
 .\install-interactive.ps1
-```
-
-#### Linux/macOS
-```bash
-cd docker-toolbox
-./install.sh
 ```
 
 **How it works:**
@@ -415,9 +313,9 @@ cd docker-toolbox
 - **All other profile content is preserved** (your custom functions, aliases, etc.)
 
 **Example workflow:**
-1. Initially installed: `dtpython`, `dtnode`, `dtgo`
-2. Run installer again and select: `dtpython`, `dtnode`, `dtrust` (added rust, removed go)
-3. Result: Profile now has `dtpython`, `dtnode`, `dtrust`
+1. Initially selected: `dtpython`, `dtnode`, `dtgo`
+2. Run installer again and select: `dtpython`, `dtnode`, `dtcargo` (added rust, removed go)
+3. Result: Profile now has `dtpython`, `dtnode`, `dtcargo`
 
 ### Manual Editing
 
