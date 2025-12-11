@@ -2,8 +2,27 @@
 
 Run popular development tools without installing them locally. Just Docker required.
 
+---
+
+## ⚠️ Important Notice
+
+**Use at Your Own Risk**
+
+- ✅ We prioritize **official Docker images** from verified publishers
+- ✅ Commands are **tested** but your environment may differ
+- ⚠️ **Verify tools** meet your security requirements before use
+- ⚠️ Review **volume mounts** (`-v`) to understand file access
+- ⚠️ Check **official documentation** for complete options and details
+
+**By using these commands, you acknowledge the risks and agree to verify tools independently.**
+
+For detailed security considerations, see the [main README](README.md#important-notice).
+
+---
+
 ## Table of Contents
 
+- [⚠️ Important Notice](#️-important-notice)
 - [Alias Setup Instructions](#alias-setup-instructions)
 - [Build & Task Runners](#build--task-runners) - just, Make
 - [Static Site Generators](#static-site-generators) - Jekyll, Hugo, MkDocs
@@ -545,13 +564,16 @@ docker run --rm -it -v ${PWD}:/app -w /app python:3.12 sh -c "pip install ipytho
 ```bash
 # Linux/macOS
 alias dtpython='docker run --rm -it -v ${PWD}:/app -w /app python:3.12 python'
-alias dtpip='docker run --rm -v ${PWD}:/app -w /app python:3.12 pip'
 alias dtipython='docker run --rm -it -v ${PWD}:/app -w /app python:3.12 sh -c "pip install -q ipython && ipython"'
 
 # PowerShell
 function dtpython { docker run --rm -it -v ${PWD}:/app -w /app python:3.12 python $args }
-function dtpip { docker run --rm -v ${PWD}:/app -w /app python:3.12 pip $args }
 function dtipython { docker run --rm -it -v ${PWD}:/app -w /app python:3.12 sh -c "pip install -q ipython && ipython" }
+```
+
+**Note:** There's no `dtpip` alias because pip installs in ephemeral containers are lost immediately. Instead, combine install + run:
+```bash
+docker run --rm -v ${PWD}:/app -w /app python:3.12 sh -c "pip install -r requirements.txt && python app.py"
 ```
 
 ---
@@ -674,26 +696,28 @@ function dtgo { docker run --rm -v ${PWD}:/app -w /app golang:1.22 go $args }
 Systems programming with Cargo.
 
 ```bash
-# Build project
-docker run --rm -v ${PWD}:/app -w /app rust:latest cargo build
+# Build project (with persistent cargo cache)
+docker run --rm -v ${PWD}:/app -v cargo-cache:/usr/local/cargo -w /app rust:latest cargo build
 
 # Run project
-docker run --rm -v ${PWD}:/app -w /app rust:latest cargo run
+docker run --rm -v ${PWD}:/app -v cargo-cache:/usr/local/cargo -w /app rust:latest cargo run
 
 # Run tests
-docker run --rm -v ${PWD}:/app -w /app rust:latest cargo test
+docker run --rm -v ${PWD}:/app -v cargo-cache:/usr/local/cargo -w /app rust:latest cargo test
 ```
 
 **Aliases:**
 ```bash
 # Linux/macOS
-alias dtcargo='docker run --rm -v ${PWD}:/app -w /app rust:latest cargo'
+alias dtcargo='docker run --rm -v ${PWD}:/app -v cargo-cache:/usr/local/cargo -w /app rust:latest cargo'
 alias dtrustc='docker run --rm -v ${PWD}:/app -w /app rust:latest rustc'
 
 # PowerShell
-function dtcargo { docker run --rm -v ${PWD}:/app -w /app rust:latest cargo $args }
+function dtcargo { docker run --rm -v ${PWD}:/app -v cargo-cache:/usr/local/cargo -w /app rust:latest cargo $args }
 function dtrustc { docker run --rm -v ${PWD}:/app -w /app rust:latest rustc $args }
 ```
+
+**Note:** The `cargo-cache` volume persists downloaded dependencies between runs, making builds much faster.
 
 ---
 
@@ -707,8 +731,11 @@ docker run --rm -it -v ${PWD}:/app -w /app ruby:3.3 irb
 # Run script
 docker run --rm -v ${PWD}:/app -w /app ruby:3.3 ruby script.rb
 
-# Bundle install
-docker run --rm -v ${PWD}:/app -w /app ruby:3.3 bundle install
+# Bundle install (installs gems to vendor/bundle in your project)
+docker run --rm -v ${PWD}:/app -w /app ruby:3.3 bundle install --path vendor/bundle
+
+# Run with bundler
+docker run --rm -v ${PWD}:/app -w /app ruby:3.3 bundle exec ruby script.rb
 ```
 
 **Aliases:**
@@ -722,6 +749,12 @@ alias dtbundle='docker run --rm -v ${PWD}:/app -w /app ruby:3.3 bundle'
 function dtruby { docker run --rm -it -v ${PWD}:/app -w /app ruby:3.3 ruby $args }
 function dtirb { docker run --rm -it -v ${PWD}:/app -w /app ruby:3.3 irb }
 function dtbundle { docker run --rm -v ${PWD}:/app -w /app ruby:3.3 bundle $args }
+```
+
+**Note:** When using `dtbundle install`, always add `--path vendor/bundle` to install gems locally to your project directory:
+```bash
+dtbundle install --path vendor/bundle
+dtbundle exec ruby script.rb
 ```
 
 ---

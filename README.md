@@ -62,6 +62,45 @@ See [docker-dev-tools.md](docker-dev-tools.md) for the complete list with usage 
 
 ---
 
+## Important Notice
+
+### Use at Your Own Risk
+
+**Docker Toolbox** provides curated Docker commands for development tools, but please be aware:
+
+- ✅ **Official Sources**: We prioritize official Docker images from verified publishers (e.g., `python:3.12`, `node:22`, `postgres:16`)
+- ✅ **Testing**: Commands are tested on Windows, macOS, and Linux, but your environment may differ
+- ⚠️ **Your Responsibility**: You should verify the tools meet your security and compliance requirements
+- ⚠️ **No Warranty**: These tools are provided "as-is" without warranties of any kind
+
+### Before Using a Tool
+
+1. **Check the source**: Review the Docker image source and publisher
+   - Official images: `docker pull <image>` and check Docker Hub for details
+   - Example: [Python on Docker Hub](https://hub.docker.com/_/python)
+
+2. **Review documentation**: Each tool has official documentation with detailed options
+   - See [docker-dev-tools.md](docker-dev-tools.md) for Docker commands
+   - Visit the tool's official website for comprehensive documentation
+
+3. **Understand what it does**: The commands mount your local directories
+   - Review the `-v` volume mounts to see what files are accessible
+   - Be cautious with commands that require credentials or sensitive data
+
+4. **Test in a safe environment**: Try tools on test projects before production use
+
+### Security Considerations
+
+- **Mounted volumes**: Tools have access to directories you mount (`-v ${PWD}:/app`)
+- **Network access**: Some tools connect to external services or databases
+- **Credentials**: Be careful when mounting config directories (`~/.aws`, `~/.kube`, etc.)
+- **Image sources**: Verify image publishers on Docker Hub before use
+- **Updates**: Docker images may update - pin specific versions for reproducibility
+
+**By using Docker Toolbox, you acknowledge these risks and agree to verify tools before use.**
+
+---
+
 ## Quick Start
 
 ### Prerequisites
@@ -347,6 +386,74 @@ cd docker-toolbox
 
 # Browse documentation
 cat docker-dev-tools.md
+```
+
+---
+
+## Updating or Removing Tools
+
+### Using the Interactive Installer (Recommended)
+
+The easiest way to add, remove, or change your installed tools is to **run the interactive installer again**:
+
+#### Windows PowerShell
+```powershell
+cd docker-toolbox
+.\install-interactive.ps1
+```
+
+#### Linux/macOS
+```bash
+cd docker-toolbox
+./install.sh
+```
+
+**How it works:**
+- Select the tools you want (add new ones or deselect to remove)
+- The installer automatically **backs up your current profile** before making changes
+- It **replaces the entire Docker Toolbox section** with your new selection
+- **All other profile content is preserved** (your custom functions, aliases, etc.)
+
+**Example workflow:**
+1. Initially installed: `dtpython`, `dtnode`, `dtgo`
+2. Run installer again and select: `dtpython`, `dtnode`, `dtrust` (added rust, removed go)
+3. Result: Profile now has `dtpython`, `dtnode`, `dtrust`
+
+### Manual Editing
+
+You can also manually edit your profile file:
+
+#### Windows PowerShell
+```powershell
+notepad $PROFILE
+```
+
+#### Linux/macOS
+```bash
+# Bash
+nano ~/.bashrc
+
+# Zsh
+nano ~/.zshrc
+```
+
+**What to edit:**
+- Find the section between `# Docker Toolbox functions` and `# End Docker Toolbox functions`
+- Add, remove, or modify any functions within this section
+- Save and reload: `. $PROFILE` (PowerShell) or `source ~/.bashrc` (bash)
+
+**Backups:**
+The installer creates timestamped backups (e.g., `Microsoft.PowerShell_profile.ps1.backup.20251211094248`)
+- Location (PowerShell): `~\Documents\WindowsPowerShell\`
+- Location (bash/zsh): Same directory as config file with `.backup` extension
+
+You can restore from a backup if needed:
+```powershell
+# PowerShell
+Copy-Item "$PROFILE.backup.20251211094248" $PROFILE
+
+# Linux/macOS
+cp ~/.bashrc.backup.20251211094248 ~/.bashrc
 ```
 
 ---
