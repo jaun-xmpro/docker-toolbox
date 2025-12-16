@@ -59,6 +59,11 @@ $AllTools = @(
     @{ Category = 'Media & Documents'; Name = 'pandoc'; Description = 'Universal document converter' }
     @{ Category = 'Media & Documents'; Name = 'ffmpeg'; Description = 'Video/audio processing' }
     @{ Category = 'Media & Documents'; Name = 'typst'; Description = 'Modern typesetting system' }
+    @{ Category = 'Media & Documents'; Name = 'latex'; Description = 'LaTeX document preparation system' }
+    @{ Category = 'Media & Documents'; Name = 'pdflatex'; Description = 'LaTeX PDF compiler' }
+    @{ Category = 'Media & Documents'; Name = 'xelatex'; Description = 'XeLaTeX compiler (Unicode support)' }
+    @{ Category = 'Media & Documents'; Name = 'lualatex'; Description = 'LuaLaTeX compiler' }
+    @{ Category = 'Media & Documents'; Name = 'bibtex'; Description = 'BibTeX bibliography processor' }
 )
 
 # Parse docker-dev-tools.md to extract tool definitions

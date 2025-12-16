@@ -34,7 +34,7 @@ For detailed security considerations, see the [main README](README.md#important-
 - [Message Brokers & IoT](#message-brokers--iot) - Mosquitto (MQTT), MQTT Explorer
 - [DevOps & Cloud CLI](#devops--cloud-cli) - AWS CLI, Azure CLI, Google Cloud, Terraform, Ansible, kubectl, Helm
 - [Code Quality & Linting](#code-quality--linting) - Prettier, Black, ShellCheck, hadolint, markdownlint
-- [Media & Documents](#media--documents) - Pandoc, FFmpeg, ImageMagick, yt-dlp, Typst
+- [Media & Documents](#media--documents) - Pandoc, FFmpeg, ImageMagick, yt-dlp, Typst, LaTeX
 - [Networking & Security](#networking--security) - nmap, curl, Trivy, testssl
 - [API Development](#api-development) - Swagger UI, HTTPie, Newman
 - [Git Tools](#git-tools) - git, GitHub CLI
@@ -1526,6 +1526,47 @@ function dttypstwatch { docker run --rm -v ${PWD}:/data ghcr.io/typst/typst watc
 ```
 
 **Note:** Typst files use the `.typ` extension. Compiled output is PDF by default. Visit [typst.app](https://typst.app) for documentation and examples.
+
+---
+
+### LaTeX
+Traditional document preparation system for high-quality typesetting.
+
+```bash
+# Compile LaTeX document to PDF
+docker run --rm -v ${PWD}:/data texlive/texlive pdflatex -output-directory=/data /data/document.tex
+
+# Compile with bibliography
+docker run --rm -v ${PWD}:/data texlive/texlive sh -c "cd /data && pdflatex document.tex && bibtex document && pdflatex document.tex && pdflatex document.tex"
+
+# Compile XeLaTeX (for Unicode and custom fonts)
+docker run --rm -v ${PWD}:/data texlive/texlive xelatex -output-directory=/data /data/document.tex
+
+# Compile LuaLaTeX
+docker run --rm -v ${PWD}:/data texlive/texlive lualatex -output-directory=/data /data/document.tex
+
+# Get version
+docker run --rm texlive/texlive pdflatex --version
+```
+
+**Aliases:**
+```bash
+# Linux/macOS
+alias dtlatex='docker run --rm -v ${PWD}:/data texlive/texlive'
+alias dtpdflatex='docker run --rm -v ${PWD}:/data texlive/texlive pdflatex -output-directory=/data'
+alias dtxelatex='docker run --rm -v ${PWD}:/data texlive/texlive xelatex -output-directory=/data'
+alias dtlualatex='docker run --rm -v ${PWD}:/data texlive/texlive lualatex -output-directory=/data'
+alias dtbibtex='docker run --rm -v ${PWD}:/data texlive/texlive bibtex'
+
+# PowerShell
+function dtlatex { docker run --rm -v ${PWD}:/data texlive/texlive $args }
+function dtpdflatex { docker run --rm -v ${PWD}:/data texlive/texlive pdflatex -output-directory=/data $args }
+function dtxelatex { docker run --rm -v ${PWD}:/data texlive/texlive xelatex -output-directory=/data $args }
+function dtlualatex { docker run --rm -v ${PWD}:/data texlive/texlive lualatex -output-directory=/data $args }
+function dtbibtex { docker run --rm -v ${PWD}:/data texlive/texlive bibtex $args }
+```
+
+**Note:** LaTeX files use the `.tex` extension. The TeXLive distribution includes all major packages. For smaller image size, consider `texlive/texlive:TL2023-historic-small` (basic packages only).
 
 ---
 

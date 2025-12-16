@@ -53,7 +53,7 @@ Docker Toolbox provides ready-to-use Docker commands for 100+ development tools:
 | **Message Brokers & IoT** | Mosquitto (MQTT), MQTT Explorer |
 | **DevOps & Cloud** | AWS CLI, Azure CLI, Google Cloud, Terraform, Ansible, kubectl, Helm |
 | **Code Quality** | Prettier, Black, ShellCheck, hadolint, markdownlint |
-| **Media & Documents** | Pandoc, FFmpeg, ImageMagick, yt-dlp, Typst |
+| **Media & Documents** | Pandoc, FFmpeg, ImageMagick, yt-dlp, Typst, LaTeX |
 | **Networking & Security** | nmap, curl, Trivy, testssl |
 | **API Development** | Swagger UI, HTTPie, Newman |
 | **Git Tools** | git, GitHub CLI |
@@ -178,7 +178,7 @@ Then reload: `source ~/.bashrc`
 
 Usage: `dtpython script.py`, `dtnode app.js`, `dtjupyter`
 
-**See [docker-dev-tools.md](docker-dev-tools.md) for all 87 tools with copy-paste ready commands.**
+**See [docker-dev-tools.md](docker-dev-tools.md) for all 92 tools with copy-paste ready commands.**
 
 ---
 
@@ -259,7 +259,7 @@ powershell -ExecutionPolicy Bypass -File install-interactive.ps1
 
 The installer will:
 - Check for Docker installation
-- Show all 87 tools in a selection window (Ctrl+Click for multiple)
+- Show all 92 tools in a selection window (Ctrl+Click for multiple)
 - Create PowerShell profile if it doesn't exist
 - Backup your profile before making changes
 - Add selected functions with `dt` prefix (e.g., `dtpython`, `dtnode`)
