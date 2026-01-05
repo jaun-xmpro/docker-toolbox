@@ -1086,6 +1086,19 @@ docker run --rm eclipse-mosquitto mosquitto_sub -h host.docker.internal -t "test
 
 # Publish message
 docker run --rm eclipse-mosquitto mosquitto_pub -h host.docker.internal -t "test/topic" -m "Hello MQTT"
+
+# Manage password files with mosquitto_passwd
+# Create new password file with user
+docker run --rm -v ${PWD}:/mosquitto/config eclipse-mosquitto mosquitto_passwd -c /mosquitto/config/passwd username
+
+# Add user to existing password file
+docker run --rm -v ${PWD}:/mosquitto/config eclipse-mosquitto mosquitto_passwd /mosquitto/config/passwd username
+
+# Delete user from password file
+docker run --rm -v ${PWD}:/mosquitto/config eclipse-mosquitto mosquitto_passwd -D /mosquitto/config/passwd username
+
+# Batch mode (provide password via stdin, useful for automation)
+echo "mypassword" | docker run --rm -i -v ${PWD}:/mosquitto/config eclipse-mosquitto mosquitto_passwd -b /mosquitto/config/passwd username
 ```
 
 **Aliases:**
@@ -1094,14 +1107,16 @@ docker run --rm eclipse-mosquitto mosquitto_pub -h host.docker.internal -t "test
 alias dtmosquitto='docker run --rm -p 1883:1883 -p 9001:9001 eclipse-mosquitto'
 alias dtmqttsub='docker run --rm eclipse-mosquitto mosquitto_sub -h host.docker.internal'
 alias dtmqttpub='docker run --rm eclipse-mosquitto mosquitto_pub -h host.docker.internal'
+alias dtmosquittopasswd='docker run --rm -v ${PWD}:/mosquitto/config eclipse-mosquitto mosquitto_passwd'
 
 # PowerShell
 function dtmosquitto { docker run --rm -p 1883:1883 -p 9001:9001 eclipse-mosquitto }
 function dtmqttsub { docker run --rm eclipse-mosquitto mosquitto_sub -h host.docker.internal $args }
 function dtmqttpub { docker run --rm eclipse-mosquitto mosquitto_pub -h host.docker.internal $args }
+function dtmosquittopasswd { docker run --rm -v ${PWD}:/mosquitto/config eclipse-mosquitto mosquitto_passwd $args }
 ```
 
-**Note:** Port 1883 is for MQTT, port 9001 is for WebSockets. Use `host.docker.internal` to connect to MQTT broker running on your host.
+**Note:** Port 1883 is for MQTT, port 9001 is for WebSockets. Use `host.docker.internal` to connect to MQTT broker running on your host. The password file created by `mosquitto_passwd` is used for authentication in your Mosquitto broker configuration.
 
 ---
 

@@ -498,6 +498,5 @@ Thanks to:
 
 **Found a bug?** [Open an issue](https://github.com/jaun-xmpro/docker-toolbox/issues)
 
-Made with ❤️ by the community
 
 </div>

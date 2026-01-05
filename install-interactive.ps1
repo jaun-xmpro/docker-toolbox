@@ -54,6 +54,10 @@ $AllTools = @(
     @{ Category = 'Databases'; Name = 'mysql'; Description = 'MySQL server' }
     @{ Category = 'Databases'; Name = 'redis'; Description = 'Redis cache server' }
     @{ Category = 'Databases'; Name = 'mongo'; Description = 'MongoDB server' }
+    @{ Category = 'Message Brokers & IoT'; Name = 'mosquitto'; Description = 'MQTT broker for IoT messaging' }
+    @{ Category = 'Message Brokers & IoT'; Name = 'mqttsub'; Description = 'MQTT subscribe client' }
+    @{ Category = 'Message Brokers & IoT'; Name = 'mqttpub'; Description = 'MQTT publish client' }
+    @{ Category = 'Message Brokers & IoT'; Name = 'mosquittopasswd'; Description = 'Mosquitto password file manager' }
     @{ Category = 'Security & Networking'; Name = 'trivy'; Description = 'Container vulnerability scanner' }
     @{ Category = 'Security & Networking'; Name = 'nmap'; Description = 'Network scanner' }
     @{ Category = 'Media & Documents'; Name = 'pandoc'; Description = 'Universal document converter' }
