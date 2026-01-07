@@ -37,6 +37,14 @@ $AllTools = @(
     @{ Category = 'Development Environments'; Name = 'vscode'; Description = 'VS Code Server in browser' }
     @{ Category = 'Development Environments'; Name = 'rstudio'; Description = 'RStudio for R programming' }
     @{ Category = 'Development Environments'; Name = 'vert'; Description = 'Web-based terminal environment' }
+    @{ Category = 'Development Environments'; Name = 'nodered'; Description = 'Node-RED flow programming' }
+    @{ Category = 'Development Environments'; Name = 'noderedstart'; Description = 'Start Node-RED container' }
+    @{ Category = 'Development Environments'; Name = 'noderedstop'; Description = 'Stop Node-RED container' }
+    @{ Category = 'Development Environments'; Name = 'noderedlogs'; Description = 'View Node-RED logs' }
+    @{ Category = 'Development Environments'; Name = 'n8n'; Description = 'Workflow automation (Zapier alternative)' }
+    @{ Category = 'Development Environments'; Name = 'n8nstart'; Description = 'Start n8n container' }
+    @{ Category = 'Development Environments'; Name = 'n8nstop'; Description = 'Stop n8n container' }
+    @{ Category = 'Development Environments'; Name = 'n8nlogs'; Description = 'View n8n logs' }
     @{ Category = 'Static Site Generators'; Name = 'jekyll'; Description = 'Ruby-based static site generator' }
     @{ Category = 'Static Site Generators'; Name = 'hugo'; Description = 'Fast Go-based site generator' }
     @{ Category = 'Static Site Generators'; Name = 'mkdocs'; Description = 'Python documentation generator' }
@@ -68,6 +76,12 @@ $AllTools = @(
     @{ Category = 'Media & Documents'; Name = 'xelatex'; Description = 'XeLaTeX compiler (Unicode support)' }
     @{ Category = 'Media & Documents'; Name = 'lualatex'; Description = 'LuaLaTeX compiler' }
     @{ Category = 'Media & Documents'; Name = 'bibtex'; Description = 'BibTeX bibliography processor' }
+    @{ Category = 'AI & Machine Learning'; Name = 'ollama'; Description = 'Run LLMs locally (Llama, Mistral, etc)' }
+    @{ Category = 'AI & Machine Learning'; Name = 'ollamastart'; Description = 'Start Ollama server' }
+    @{ Category = 'AI & Machine Learning'; Name = 'ollamastop'; Description = 'Stop Ollama server' }
+    @{ Category = 'AI & Machine Learning'; Name = 'ollamarun'; Description = 'Run an Ollama model' }
+    @{ Category = 'AI & Machine Learning'; Name = 'ollamapull'; Description = 'Pull an Ollama model' }
+    @{ Category = 'AI & Machine Learning'; Name = 'ollamalist'; Description = 'List Ollama models' }
 )
 
 # Parse docker-dev-tools.md to extract tool definitions

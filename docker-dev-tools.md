@@ -28,16 +28,18 @@ For detailed security considerations, see the [main README](README.md#important-
 - [Static Site Generators](#static-site-generators) - Jekyll, Hugo, MkDocs
 - [Terminal Tools](#terminal-tools) - tmux, htop, ncdu, lazygit, lazydocker, ranger, fzf, bat, ripgrep, fd, jq, yq
 - [Programming Languages](#programming-languages) - Python, Jupyter Notebook, Node.js, Go, Rust, Ruby
-- [Development Environments & IDEs](#development-environments--ides) - VS Code Server, RStudio, Vert
+- [Development Environments & IDEs](#development-environments--ides) - VS Code Server, RStudio, Vert, Node-RED, n8n
 - [Testing Tools](#testing-tools) - Playwright
-- [Databases](#databases) - PostgreSQL, MySQL, Redis, MongoDB
+- [Databases](#databases) - PostgreSQL, MySQL, Redis, MongoDB, InfluxDB
+- [Monitoring & Visualization](#monitoring--visualization) - Grafana, Uptime Kuma
 - [Message Brokers & IoT](#message-brokers--iot) - Mosquitto (MQTT), MQTT Explorer
-- [DevOps & Cloud CLI](#devops--cloud-cli) - AWS CLI, Azure CLI, Google Cloud, Terraform, Ansible, kubectl, Helm
+- [DevOps & Cloud CLI](#devops--cloud-cli) - AWS CLI, Azure CLI, Google Cloud, LocalStack, Terraform, Vault, Ansible, kubectl, Helm
 - [Code Quality & Linting](#code-quality--linting) - Prettier, Black, ShellCheck, hadolint, markdownlint
 - [Media & Documents](#media--documents) - Pandoc, FFmpeg, ImageMagick, yt-dlp, Typst, LaTeX
 - [Networking & Security](#networking--security) - nmap, curl, Trivy, testssl
 - [API Development](#api-development) - Swagger UI, HTTPie, Newman
 - [Git Tools](#git-tools) - git, GitHub CLI
+- [AI & Machine Learning](#ai--machine-learning) - Ollama
 - [Tips](#tips)
 
 ---
@@ -917,6 +919,102 @@ function dtvertstop {
 - The container persists and restarts automatically unless stopped
 
 ---
+### Node-RED
+Flow-based programming tool for IoT, home automation, and API integration.
+
+```bash
+# Start Node-RED (ephemeral)
+docker run --rm -p 1880:1880 nodered/node-red
+
+# With persistent data
+docker run --rm -p 1880:1880 -v nodered-data:/data nodered/node-red
+
+# With custom settings file
+docker run --rm -p 1880:1880 -v ${PWD}/settings.js:/data/settings.js -v nodered-data:/data nodered/node-red
+
+# Run as daemon with auto-restart
+docker run -d --restart unless-stopped -p 1880:1880 -v nodered-data:/data --name nodered nodered/node-red
+
+# Stop the daemon
+docker stop nodered
+
+# Start existing container
+docker start nodered
+
+# View logs
+docker logs nodered -f
+```
+
+**Aliases:**
+```bash
+# Linux/macOS
+alias dtnodered='docker run --rm -p 1880:1880 -v nodered-data:/data nodered/node-red'
+alias dtnoderedstart='docker start nodered'
+alias dtnoderedstop='docker stop nodered'
+alias dtnoderedlogs='docker logs nodered -f'
+
+# PowerShell
+function dtnodered { docker run --rm -p 1880:1880 -v nodered-data:/data nodered/node-red }
+function dtnoderedstart { docker start nodered }
+function dtnoderedstop { docker stop nodered }
+function dtnoderedlogs { docker logs nodered -f }
+```
+
+**Note:** Access Node-RED at `http://localhost:1880`. Flows and settings are stored in the `nodered-data` volume. Use the daemon mode for long-running instances.
+
+---
+
+
+
+## Testing Tools
+
+### n8n
+Workflow automation tool for connecting apps and services (alternative to Zapier/Make).
+
+```bash
+# Start n8n (ephemeral)
+docker run --rm -p 5678:5678 n8nio/n8n
+
+# With persistent data
+docker run --rm -p 5678:5678 -v n8n-data:/home/node/.n8n n8nio/n8n
+
+# Run as daemon with auto-restart
+docker run -d --restart unless-stopped -p 5678:5678 -v n8n-data:/home/node/.n8n --name n8n n8nio/n8n
+
+# With custom timezone
+docker run -d --restart unless-stopped -p 5678:5678 -v n8n-data:/home/node/.n8n -e TZ=America/New_York --name n8n n8nio/n8n
+
+# With webhook URL (for production)
+docker run -d --restart unless-stopped -p 5678:5678 -v n8n-data:/home/node/.n8n -e WEBHOOK_URL=https://yourdomain.com --name n8n n8nio/n8n
+
+# Stop the daemon
+docker stop n8n
+
+# Start existing container
+docker start n8n
+
+# View logs
+docker logs n8n -f
+```
+
+**Aliases:**
+```bash
+# Linux/macOS
+alias dtn8n='docker run --rm -p 5678:5678 -v n8n-data:/home/node/.n8n n8nio/n8n'
+alias dtn8nstart='docker start n8n'
+alias dtn8nstop='docker stop n8n'
+alias dtn8nlogs='docker logs n8n -f'
+
+# PowerShell
+function dtn8n { docker run --rm -p 5678:5678 -v n8n-data:/home/node/.n8n n8nio/n8n }
+function dtn8nstart { docker start n8n }
+function dtn8nstop { docker stop n8n }
+function dtn8nlogs { docker logs n8n -f }
+```
+
+**Note:** Access n8n at `http://localhost:5678`. Workflows are stored in the `n8n-data` volume. Supports 200+ integrations including APIs, databases, and cloud services.
+
+---
 
 
 ## Testing Tools
@@ -1058,8 +1156,137 @@ alias dtmongosh='docker run --rm -it mongo:7 mongosh'
 
 # PowerShell
 function dtmongo { docker run --rm -p 27017:27017 mongo:7 }
-function dtmongosh { docker run --rm -it mongo:7 mongosh $args }
+
+### InfluxDB
+Time-series database optimized for IoT sensors, metrics, and real-time analytics.
+
+```bash
+# Start InfluxDB 2.x (ephemeral)
+docker run --rm -p 8086:8086 influxdb:2
+
+# With persistent data
+docker run --rm -p 8086:8086 -v influxdb-data:/var/lib/influxdb2 influxdb:2
+
+# Run as daemon with auto-restart
+docker run -d --restart unless-stopped -p 8086:8086 -v influxdb-data:/var/lib/influxdb2 --name influxdb influxdb:2
+
+# With initial setup (username, password, org, bucket)
+docker run -d --restart unless-stopped -p 8086:8086 -v influxdb-data:/var/lib/influxdb2 -e DOCKER_INFLUXDB_INIT_MODE=setup -e DOCKER_INFLUXDB_INIT_USERNAME=admin -e DOCKER_INFLUXDB_INIT_PASSWORD=mypassword -e DOCKER_INFLUXDB_INIT_ORG=myorg -e DOCKER_INFLUXDB_INIT_BUCKET=mybucket --name influxdb influxdb:2
+
+# Run InfluxDB CLI
+docker exec -it influxdb influx
+
+# Stop the daemon
+docker stop influxdb
+
+# Start existing container
+docker start influxdb
 ```
+
+**Aliases:**
+```bash
+# Linux/macOS
+alias dtinfluxdb='docker run --rm -p 8086:8086 -v influxdb-data:/var/lib/influxdb2 influxdb:2'
+alias dtinfluxstart='docker start influxdb'
+alias dtinfluxstop='docker stop influxdb'
+alias dtinfluxcli='docker exec -it influxdb influx'
+
+# PowerShell
+function dtinfluxdb { docker run --rm -p 8086:8086 -v influxdb-data:/var/lib/influxdb2 influxdb:2 }
+function dtinfluxstart { docker start influxdb }
+function dtinfluxstop { docker stop influxdb }
+function dtinfluxcli { docker exec -it influxdb influx }
+```
+
+**Note:** Access InfluxDB UI at `http://localhost:8086`. Perfect for storing time-series data from IoT sensors, system metrics, and application performance monitoring. Works great with Grafana for visualization.
+
+
+## Monitoring & Visualization
+
+### Grafana
+Beautiful dashboards for metrics, logs, and time-series data visualization.
+
+```bash
+# Start Grafana (ephemeral)
+docker run --rm -p 3000:3000 grafana/grafana
+
+# With persistent data
+docker run --rm -p 3000:3000 -v grafana-data:/var/lib/grafana grafana/grafana
+
+# Run as daemon with auto-restart
+docker run -d --restart unless-stopped -p 3000:3000 -v grafana-data:/var/lib/grafana --name grafana grafana/grafana
+
+# With custom admin password
+docker run -d --restart unless-stopped -p 3000:3000 -v grafana-data:/var/lib/grafana -e GF_SECURITY_ADMIN_PASSWORD=mysecret --name grafana grafana/grafana
+
+# With anonymous access enabled
+docker run -d --restart unless-stopped -p 3000:3000 -v grafana-data:/var/lib/grafana -e GF_AUTH_ANONYMOUS_ENABLED=true --name grafana grafana/grafana
+
+# Stop the daemon
+docker stop grafana
+
+# Start existing container
+docker start grafana
+```
+
+**Aliases:**
+```bash
+# Linux/macOS
+alias dtgrafana='docker run --rm -p 3000:3000 -v grafana-data:/var/lib/grafana grafana/grafana'
+alias dtgrafanastart='docker start grafana'
+alias dtgrafanastop='docker stop grafana'
+alias dtgrafanalogs='docker logs grafana -f'
+
+# PowerShell
+function dtgrafana { docker run --rm -p 3000:3000 -v grafana-data:/var/lib/grafana grafana/grafana }
+function dtgrafanastart { docker start grafana }
+function dtgrafanastop { docker stop grafana }
+function dtgrafanalogs { docker logs grafana -f }
+```
+
+**Note:** Access Grafana at `http://localhost:3000`. Default credentials are `admin`/`admin` (you'll be prompted to change on first login). Works great with InfluxDB, Prometheus, PostgreSQL, and other data sources.
+
+---
+
+### Uptime Kuma
+Self-hosted uptime monitoring tool with beautiful UI and notifications.
+
+```bash
+# Start Uptime Kuma (ephemeral)
+docker run --rm -p 3001:3001 louislam/uptime-kuma
+
+# With persistent data
+docker run --rm -p 3001:3001 -v uptime-kuma-data:/app/data louislam/uptime-kuma
+
+# Run as daemon with auto-restart
+docker run -d --restart unless-stopped -p 3001:3001 -v uptime-kuma-data:/app/data --name uptime-kuma louislam/uptime-kuma
+
+# With custom port
+docker run -d --restart unless-stopped -p 3002:3001 -v uptime-kuma-data:/app/data --name uptime-kuma louislam/uptime-kuma
+
+# Stop the daemon
+docker stop uptime-kuma
+
+# Start existing container
+docker start uptime-kuma
+```
+
+**Aliases:**
+```bash
+# Linux/macOS
+alias dtuptime='docker run --rm -p 3001:3001 -v uptime-kuma-data:/app/data louislam/uptime-kuma'
+alias dtuptimestart='docker start uptime-kuma'
+alias dtuptimestop='docker stop uptime-kuma'
+alias dtuptimelogs='docker logs uptime-kuma -f'
+
+# PowerShell
+function dtuptime { docker run --rm -p 3001:3001 -v uptime-kuma-data:/app/data louislam/uptime-kuma }
+function dtuptimestart { docker start uptime-kuma }
+function dtuptimestop { docker stop uptime-kuma }
+function dtuptimelogs { docker logs uptime-kuma -f }
+```
+
+**Note:** Access Uptime Kuma at `http://localhost:3001`. Monitor HTTP/HTTPS, TCP, Ping, DNS, and more. Supports notifications via Discord, Telegram, Slack, email, and 50+ other services.
 
 ---
 
@@ -1186,6 +1413,53 @@ function dtaws { docker run --rm -v $HOME/.aws:/root/.aws amazon/aws-cli $args }
 ---
 
 ### Azure CLI
+
+### LocalStack
+Fully functional local AWS cloud stack for testing (S3, Lambda, DynamoDB, SQS, SNS, and more).
+
+```bash
+# Start LocalStack (basic services)
+docker run --rm -p 4566:4566 -p 4510-4559:4510-4559 localstack/localstack
+
+# With persistent data
+docker run --rm -p 4566:4566 -p 4510-4559:4510-4559 -v localstack-data:/var/lib/localstack localstack/localstack
+
+# Run as daemon with auto-restart
+docker run -d --restart unless-stopped -p 4566:4566 -p 4510-4559:4510-4559 -v localstack-data:/var/lib/localstack --name localstack localstack/localstack
+
+# With specific services enabled
+docker run -d --restart unless-stopped -p 4566:4566 -e SERVICES=s3,lambda,dynamodb,sqs -v localstack-data:/var/lib/localstack --name localstack localstack/localstack
+
+# With Docker socket (for Lambda containers)
+docker run -d --restart unless-stopped -p 4566:4566 -v /var/run/docker.sock:/var/run/docker.sock -v localstack-data:/var/lib/localstack --name localstack localstack/localstack
+
+# Stop the daemon
+docker stop localstack
+
+# Start existing container
+docker start localstack
+```
+
+**Aliases:**
+```bash
+# Linux/macOS
+alias dtlocalstack='docker run --rm -p 4566:4566 -v localstack-data:/var/lib/localstack localstack/localstack'
+alias dtlocalstackstart='docker start localstack'
+alias dtlocalstackstop='docker stop localstack'
+alias dtlocalstacklogs='docker logs localstack -f'
+
+# PowerShell
+function dtlocalstack { docker run --rm -p 4566:4566 -v localstack-data:/var/lib/localstack localstack/localstack }
+function dtlocalstackstart { docker start localstack }
+function dtlocalstackstop { docker stop localstack }
+function dtlocalstacklogs { docker logs localstack -f }
+```
+
+**Note:** All services accessible at `http://localhost:4566`. Use AWS CLI with `--endpoint-url=http://localhost:4566`. Free tier supports core services; Pro tier adds more advanced services. Perfect for testing without AWS costs.
+
+---
+
+### Azure CLI
 Interact with Azure services.
 
 ```bash
@@ -1242,6 +1516,54 @@ alias dttf='docker run --rm -v ${PWD}:/workspace -w /workspace hashicorp/terrafo
 function dtterraform { docker run --rm -v ${PWD}:/workspace -w /workspace hashicorp/terraform $args }
 function dttf { docker run --rm -v ${PWD}:/workspace -w /workspace hashicorp/terraform $args }
 ```
+
+---
+
+### Ansible
+
+### Vault
+Secrets management, encryption as a service, and privileged access management by HashiCorp.
+
+```bash
+# Start Vault in development mode (WARNING: Not for production!)
+docker run --rm -p 8200:8200 -e VAULT_DEV_ROOT_TOKEN_ID=myroot hashicorp/vault
+
+# With persistent data (server mode)
+docker run --rm -p 8200:8200 -v vault-data:/vault/file --cap-add=IPC_LOCK hashicorp/vault server
+
+# Run as daemon in dev mode (testing only)
+docker run -d --restart unless-stopped -p 8200:8200 -e VAULT_DEV_ROOT_TOKEN_ID=myroot --name vault hashicorp/vault
+
+# Run Vault CLI commands
+docker exec -it vault vault status
+docker exec -it vault vault kv put secret/myapp password=secret123
+
+# Access Vault shell
+docker exec -it vault sh
+
+# Stop the daemon
+docker stop vault
+
+# Start existing container
+docker start vault
+```
+
+**Aliases:**
+```bash
+# Linux/macOS
+alias dtvault='docker run --rm -p 8200:8200 -e VAULT_DEV_ROOT_TOKEN_ID=myroot hashicorp/vault'
+alias dtvaultstart='docker start vault'
+alias dtvaultstop='docker stop vault'
+alias dtvaultcli='docker exec -it vault vault'
+
+# PowerShell
+function dtvault { docker run --rm -p 8200:8200 -e VAULT_DEV_ROOT_TOKEN_ID=myroot hashicorp/vault }
+function dtvaultstart { docker start vault }
+function dtvaultstop { docker stop vault }
+function dtvaultcli { docker exec -it vault vault $args }
+```
+
+**Note:** Access Vault UI at `http://localhost:8200`. Development mode uses in-memory storage and auto-unseals (root token: `myroot`). For production, use proper configuration with persistent storage and real secrets. Never use dev mode in production!
 
 ---
 
@@ -1757,6 +2079,75 @@ alias dtgh='docker run --rm -v ~/.config/gh:/root/.config/gh -v ${PWD}:/repo -w 
 # PowerShell
 function dtgh { docker run --rm -v $HOME/.config/gh:/root/.config/gh -v ${PWD}:/repo -w /repo ghcr.io/github/gh-cli gh $args }
 ```
+
+---
+
+## Tips
+
+## AI & Machine Learning
+
+### Ollama
+Run large language models locally (Llama, Mistral, CodeLlama, and more).
+
+```bash
+# Start Ollama server
+docker run -d --restart unless-stopped -p 11434:11434 -v ollama-data:/root/.ollama --name ollama ollama/ollama
+
+# Run Ollama with GPU support (NVIDIA)
+docker run -d --gpus=all --restart unless-stopped -p 11434:11434 -v ollama-data:/root/.ollama --name ollama ollama/ollama
+
+# Pull a model (run after server is started)
+docker exec -it ollama ollama pull llama3.2
+
+# Run a model interactively
+docker exec -it ollama ollama run llama3.2
+
+# List installed models
+docker exec -it ollama ollama list
+
+# Chat with a model
+docker exec -it ollama ollama run llama3.2 "Explain quantum computing in simple terms"
+
+# Run CodeLlama for coding
+docker exec -it ollama ollama run codellama "Write a Python function to reverse a string"
+
+# Stop the daemon
+docker stop ollama
+
+# Start existing container
+docker start ollama
+```
+
+**Available Models (examples):**
+- `llama3.2` - Meta's Llama 3.2 (3B, 8B)
+- `llama3.1` - Meta's Llama 3.1 (8B, 70B, 405B)
+- `mistral` - Mistral 7B
+- `codellama` - Code-specialized Llama
+- `phi3` - Microsoft's Phi-3 (small but powerful)
+- `gemma2` - Google's Gemma 2
+- `qwen2.5` - Alibaba's Qwen 2.5
+- `deepseek-coder` - Specialized coding model
+
+**Aliases:**
+```bash
+# Linux/macOS
+alias dtollama='docker exec -it ollama ollama'
+alias dtollamastart='docker start ollama'
+alias dtollamastop='docker stop ollama'
+alias dtollamarun='docker exec -it ollama ollama run'
+alias dtollamapull='docker exec -it ollama ollama pull'
+alias dtollamalist='docker exec -it ollama ollama list'
+
+# PowerShell
+function dtollama { docker exec -it ollama ollama $args }
+function dtollamastart { docker start ollama }
+function dtollamastop { docker stop ollama }
+function dtollamarun { docker exec -it ollama ollama run $args }
+function dtollamapull { docker exec -it ollama ollama pull $args }
+function dtollamalist { docker exec -it ollama ollama list }
+```
+
+**Note:** Ollama server runs at `http://localhost:11434`. Models are large (1-45GB depending on size). First use `dtollamapull llama3.2` to download a model, then use `dtollamarun llama3.2` to chat. API compatible with OpenAI format for easy integration.
 
 ---
 
