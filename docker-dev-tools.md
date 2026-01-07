@@ -30,16 +30,16 @@ For detailed security considerations, see the [main README](README.md#important-
 - [Programming Languages](#programming-languages) - Python, Jupyter Notebook, Node.js, Go, Rust, Ruby
 - [Development Environments & IDEs](#development-environments--ides) - VS Code Server, RStudio, Vert, Node-RED, n8n
 - [Testing Tools](#testing-tools) - Playwright
-- [Databases](#databases) - PostgreSQL, MySQL, Redis, MongoDB, InfluxDB
-- [Monitoring & Visualization](#monitoring--visualization) - Grafana, Uptime Kuma
+- [Databases](#databases) - PostgreSQL, MySQL, Redis, MongoDB, InfluxDB, NocoDB
+- [Monitoring & Visualization](#monitoring--visualization) - Grafana, Uptime Kuma, Dozzle
 - [Message Brokers & IoT](#message-brokers--iot) - Mosquitto (MQTT), MQTT Explorer
 - [DevOps & Cloud CLI](#devops--cloud-cli) - AWS CLI, Azure CLI, Google Cloud, LocalStack, Terraform, Vault, Ansible, kubectl, Helm
 - [Code Quality & Linting](#code-quality--linting) - Prettier, Black, ShellCheck, hadolint, markdownlint
 - [Media & Documents](#media--documents) - Pandoc, FFmpeg, ImageMagick, yt-dlp, Typst, LaTeX
-- [Networking & Security](#networking--security) - nmap, curl, Trivy, testssl
+- [Networking & Security](#networking--security) - nmap, Caddy, curl, Trivy, testssl, Vaultwarden
 - [API Development](#api-development) - Swagger UI, HTTPie, Newman
 - [Git Tools](#git-tools) - git, GitHub CLI
-- [AI & Machine Learning](#ai--machine-learning) - Ollama
+- [AI & Machine Learning](#ai--machine-learning) - Ollama, Open WebUI
 - [Tips](#tips)
 
 ---
@@ -1292,6 +1292,51 @@ function dtuptimelogs { docker logs uptime-kuma -f }
 
 ## Message Brokers & IoT
 
+### Dozzle
+Real-time Docker container log viewer with beautiful web UI.
+
+```bash
+# Start Dozzle (read-only access to Docker)
+docker run --rm -p 8080:8080 -v /var/run/docker.sock:/var/run/docker.sock:ro amir20/dozzle
+
+# Run as daemon with auto-restart
+docker run -d --restart unless-stopped -p 8080:8080 -v /var/run/docker.sock:/var/run/docker.sock:ro --name dozzle amir20/dozzle
+
+# With custom port
+docker run -d --restart unless-stopped -p 9999:8080 -v /var/run/docker.sock:/var/run/docker.sock:ro --name dozzle amir20/dozzle
+
+# With authentication enabled
+docker run -d --restart unless-stopped -p 8080:8080 -v /var/run/docker.sock:/var/run/docker.sock:ro -e DOZZLE_USERNAME=admin -e DOZZLE_PASSWORD=secret --name dozzle amir20/dozzle
+
+# Filter to show only specific containers
+docker run -d --restart unless-stopped -p 8080:8080 -v /var/run/docker.sock:/var/run/docker.sock:ro -e DOZZLE_FILTER="name=postgres|name=redis" --name dozzle amir20/dozzle
+
+# Stop the daemon
+docker stop dozzle
+
+# Start existing container
+docker start dozzle
+```
+
+**Aliases:**
+```bash
+# Linux/macOS
+alias dtdozzle='docker run --rm -p 8080:8080 -v /var/run/docker.sock:/var/run/docker.sock:ro amir20/dozzle'
+alias dtdozzlestart='docker start dozzle'
+alias dtdozzlestop='docker stop dozzle'
+
+# PowerShell (Windows requires npipe mount)
+function dtdozzle { docker run --rm -p 8080:8080 -v /var/run/docker.sock:/var/run/docker.sock:ro amir20/dozzle }
+function dtdozzlestart { docker start dozzle }
+function dtdozzlestop { docker stop dozzle }
+```
+
+**Note:** Access Dozzle at `http://localhost:8080`. Automatically discovers all running containers. Features include live log streaming, container stats, search/filter, and dark mode. Zero configuration needed!
+
+---
+
+## Message Brokers & IoT
+
 ### Mosquitto (MQTT Broker)
 Lightweight MQTT broker for IoT messaging.
 
@@ -1928,6 +1973,63 @@ function dtnmap { docker run --rm -it instrumentisto/nmap $args }
 
 ---
 
+### curl
+
+### Caddy
+Modern web server with automatic HTTPS via Let's Encrypt.
+
+```bash
+# Serve files from current directory
+docker run --rm -p 80:80 -p 443:443 -v ${PWD}:/usr/share/caddy caddy
+
+# With custom Caddyfile
+docker run --rm -p 80:80 -p 443:443 -v ${PWD}/Caddyfile:/etc/caddy/Caddyfile -v ${PWD}/site:/usr/share/caddy caddy
+
+# Run as daemon with persistent data and config
+docker run -d --restart unless-stopped -p 80:80 -p 443:443 -v caddy-data:/data -v caddy-config:/config -v ${PWD}:/usr/share/caddy --name caddy caddy
+
+# Reverse proxy example (proxy to localhost:3000)
+docker run --rm -p 80:80 caddy caddy reverse-proxy --from :80 --to host.docker.internal:3000
+
+# File server on custom port
+docker run --rm -p 8080:8080 -v ${PWD}:/usr/share/caddy caddy caddy file-server --listen :8080 --root /usr/share/caddy
+
+# Stop the daemon
+docker stop caddy
+
+# Start existing container
+docker start caddy
+
+# Reload Caddy config (without restart)
+docker exec -w /etc/caddy caddy caddy reload
+```
+
+**Example Caddyfile:**
+```
+localhost
+
+file_server browse
+```
+
+**Aliases:**
+```bash
+# Linux/macOS
+alias dtcaddy='docker run --rm -p 80:80 -p 443:443 -v ${PWD}:/usr/share/caddy caddy'
+alias dtcaddystart='docker start caddy'
+alias dtcaddystop='docker stop caddy'
+alias dtcaddyreload='docker exec -w /etc/caddy caddy caddy reload'
+
+# PowerShell
+function dtcaddy { docker run --rm -p 80:80 -p 443:443 -v ${PWD}:/usr/share/caddy caddy }
+function dtcaddystart { docker start caddy }
+function dtcaddystop { docker stop caddy }
+function dtcaddyreload { docker exec -w /etc/caddy caddy caddy reload }
+```
+
+**Note:** Caddy automatically obtains and renews SSL certificates from Let's Encrypt. Simpler configuration than Nginx. Perfect for reverse proxying, static sites, and API gateways. Config reloads with zero downtime.
+
+---
+
 ### curl (with extras)
 Advanced curl with HTTP/3 support.
 
@@ -1981,6 +2083,59 @@ alias dttestssl='docker run --rm -it drwetter/testssl.sh'
 # PowerShell
 function dttestssl { docker run --rm -it drwetter/testssl.sh $args }
 ```
+
+---
+
+## API Development
+
+### Vaultwarden
+Lightweight self-hosted Bitwarden password manager server.
+
+```bash
+# Start Vaultwarden (ephemeral)
+docker run --rm -p 8080:80 vaultwarden/server
+
+# With persistent data
+docker run --rm -p 8080:80 -v vaultwarden-data:/data vaultwarden/server
+
+# Run as daemon with auto-restart
+docker run -d --restart unless-stopped -p 8080:80 -v vaultwarden-data:/data --name vaultwarden vaultwarden/server
+
+# With admin panel enabled
+docker run -d --restart unless-stopped -p 8080:80 -v vaultwarden-data:/data -e ADMIN_TOKEN=your_secure_token --name vaultwarden vaultwarden/server
+
+# Disable new user registration (after creating your account)
+docker run -d --restart unless-stopped -p 8080:80 -v vaultwarden-data:/data -e SIGNUPS_ALLOWED=false --name vaultwarden vaultwarden/server
+
+# With custom domain (for mobile apps)
+docker run -d --restart unless-stopped -p 8080:80 -v vaultwarden-data:/data -e DOMAIN=https://vault.yourdomain.com --name vaultwarden vaultwarden/server
+
+# Enable WebSocket notifications (for real-time sync)
+docker run -d --restart unless-stopped -p 8080:80 -p 3012:3012 -v vaultwarden-data:/data -e WEBSOCKET_ENABLED=true --name vaultwarden vaultwarden/server
+
+# Stop the daemon
+docker stop vaultwarden
+
+# Start existing container
+docker start vaultwarden
+```
+
+**Aliases:**
+```bash
+# Linux/macOS
+alias dtvaultwarden='docker run --rm -p 8080:80 -v vaultwarden-data:/data vaultwarden/server'
+alias dtvaultwardenstart='docker start vaultwarden'
+alias dtvaultwardenstop='docker stop vaultwarden'
+alias dtvaultwardenlogs='docker logs vaultwarden -f'
+
+# PowerShell
+function dtvaultwarden { docker run --rm -p 8080:80 -v vaultwarden-data:/data vaultwarden/server }
+function dtvaultwardenstart { docker start vaultwarden }
+function dtvaultwardenstop { docker stop vaultwarden }
+function dtvaultwardenlogs { docker logs vaultwarden -f }
+```
+
+**Note:** Access Vaultwarden at `http://localhost:8080`. Compatible with official Bitwarden clients (browser extensions, mobile apps, desktop apps). Admin panel at `/admin` (requires ADMIN_TOKEN). IMPORTANT: Use HTTPS in production! Supports 2FA, organizations, and emergency access.
 
 ---
 
@@ -2150,6 +2305,51 @@ function dtollamalist { docker exec -it ollama ollama list }
 **Note:** Ollama server runs at `http://localhost:11434`. Models are large (1-45GB depending on size). First use `dtollamapull llama3.2` to download a model, then use `dtollamarun llama3.2` to chat. API compatible with OpenAI format for easy integration.
 
 ---
+
+## Tips
+
+### Open WebUI
+ChatGPT-style web interface for Ollama and other LLM providers.
+
+```bash
+# Start Open WebUI (connects to Ollama on host)
+docker run --rm -p 3000:8080 -v open-webui-data:/app/backend/data --add-host=host.docker.internal:host-gateway ghcr.io/open-webui/open-webui
+
+# Run as daemon with auto-restart
+docker run -d --restart unless-stopped -p 3000:8080 -v open-webui-data:/app/backend/data --add-host=host.docker.internal:host-gateway --name open-webui ghcr.io/open-webui/open-webui
+
+# With custom port
+docker run -d --restart unless-stopped -p 8080:8080 -v open-webui-data:/app/backend/data --add-host=host.docker.internal:host-gateway --name open-webui ghcr.io/open-webui/open-webui
+
+# With OpenAI API key (use both Ollama and OpenAI)
+docker run -d --restart unless-stopped -p 3000:8080 -v open-webui-data:/app/backend/data -e OPENAI_API_KEY=your_key --add-host=host.docker.internal:host-gateway --name open-webui ghcr.io/open-webui/open-webui
+
+# Stop the daemon
+docker stop open-webui
+
+# Start existing container
+docker start open-webui
+```
+
+**Aliases:**
+```bash
+# Linux/macOS
+alias dtopenwebui='docker run --rm -p 3000:8080 -v open-webui-data:/app/backend/data --add-host=host.docker.internal:host-gateway ghcr.io/open-webui/open-webui'
+alias dtopenwebuistart='docker start open-webui'
+alias dtopenwebuistop='docker stop open-webui'
+alias dtopenwebuilogs='docker logs open-webui -f'
+
+# PowerShell
+function dtopenwebui { docker run --rm -p 3000:8080 -v open-webui-data:/app/backend/data --add-host=host.docker.internal:host-gateway ghcr.io/open-webui/open-webui }
+function dtopenwebuistart { docker start open-webui }
+function dtopenwebuistop { docker stop open-webui }
+function dtopenwebuilogs { docker logs open-webui -f }
+```
+
+**Note:** Access Open WebUI at `http://localhost:3000`. Automatically discovers Ollama running on `localhost:11434`. Features include chat history, multiple models, document upload (RAG), image generation, and multi-user support. First user to register becomes admin.
+
+---
+
 
 ## Tips
 

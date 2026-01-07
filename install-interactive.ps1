@@ -82,6 +82,10 @@ $AllTools = @(
     @{ Category = 'AI & Machine Learning'; Name = 'ollamarun'; Description = 'Run an Ollama model' }
     @{ Category = 'AI & Machine Learning'; Name = 'ollamapull'; Description = 'Pull an Ollama model' }
     @{ Category = 'AI & Machine Learning'; Name = 'ollamalist'; Description = 'List Ollama models' }
+    @{ Category = 'AI & Machine Learning'; Name = 'openwebui'; Description = 'ChatGPT-style UI for Ollama' }
+    @{ Category = 'AI & Machine Learning'; Name = 'openwebuistart'; Description = 'Start Open WebUI container' }
+    @{ Category = 'AI & Machine Learning'; Name = 'openwebuistop'; Description = 'Stop Open WebUI container' }
+    @{ Category = 'AI & Machine Learning'; Name = 'openwebuilogs'; Description = 'View Open WebUI logs' }
 )
 
 # Parse docker-dev-tools.md to extract tool definitions
